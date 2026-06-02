@@ -1,4 +1,5 @@
 import type { Auth } from '@/types/auth';
+import type { RouteParams } from '@/routes/helpers';
 
 declare module 'react' {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -16,4 +17,12 @@ declare module '@inertiajs/core' {
             [key: string]: unknown;
         };
     }
+}
+
+declare global {
+    interface Window {
+        route: (name: string, params?: RouteParams) => string;
+    }
+
+    function route(name: string, params?: RouteParams): string;
 }

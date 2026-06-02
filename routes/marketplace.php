@@ -9,9 +9,9 @@ use App\Http\Controllers\Public\VenueController as PublicVenueController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('venues', [PublicVenueController::class, 'index'])->name('venues.index');
-Route::get('venues/{venue:slug}', [PublicVenueController::class, 'show'])->name('venues.show');
 Route::get('venues/categories/{category:slug}', [PublicVenueController::class, 'category'])->name('venues.categories.show');
 Route::get('venues/locations/{locale:slug}', [PublicVenueController::class, 'locale'])->name('venues.locales.show');
+Route::get('venues/{venue:slug}', [PublicVenueController::class, 'show'])->name('venues.show');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('dashboard')->name('dashboard.')->group(function () {
