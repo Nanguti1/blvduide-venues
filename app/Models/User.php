@@ -3,6 +3,11 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Favorite;
+use App\Models\Review;
+use App\Models\Subscription;
+use App\Models\Venue;
+use App\Enums\SubscriptionStatus;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -23,9 +28,55 @@ class User extends Authenticatable implements PasskeyUser
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, PasskeyAuthenticatable, TwoFactorAuthenticatable, HasRoles;
 
-    public function venues(): HasMany { return $this->hasMany(Venue::class); }
-    public function subscriptions(): HasMany { return $this->hasMany(Subscription::class); }
-    public function favoriteVenues(): BelongsToMany { return $this->belongsToMany(Venue::class, 'favorites')->withTimestamps(); }
+    public function venues(): HasMany
+    {
+        return $this->hasMany(Venue::class);
+    }
+
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
+    public function favoriteVenues(): BelongsToMany
+    {
+        return $this->belongsToMany(Venue::class, 'favorites')->withTimestamps();
+    }
+
+    public function favorites(): HasMany
+    {
+        return $this->hasMany(Favorite::class);
+    }
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function activeSubscription(): ?Subscription
+    {
+        return $this->subscriptions()
+            ->where('status', SubscriptionStatus::Active)
+            ->where('expires_at', '>=', now())
+            ->latest('expires_at')
+            ->first();
+    }
+
+    public function hasActiveSubscription(): bool
+    {
+        return $this->activeSubscription() !== null;
+    }
+
+    public function remainingListingAllowance(): int
+    {
+        $active = $this->activeSubscription();
+
+        if (! $active) {
+            return 0;
+        }
+
+        return max(0, $active->package->max_listings - $this->venues()->count());
+    }
 
     /**
      * Get the attributes that should be cast.

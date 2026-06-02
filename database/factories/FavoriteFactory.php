@@ -1,0 +1,18 @@
+<?php
+
+namespace Database\Factories;
+
+use App\Models\User;
+use App\Models\Venue;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class FavoriteFactory extends Factory
+{
+    public function definition(): array
+    {
+        return [
+            'user_id' => User::factory(),
+            'venue_id' => Venue::factory(),
+        ];
+    }
+}
