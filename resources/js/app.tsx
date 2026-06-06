@@ -25,7 +25,7 @@ createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
     resolve: (name) =>
         resolvePageComponent(
-            name,
+            `./pages/${name}.tsx`,
             import.meta.glob('./pages/**/*.tsx'),
         ) as Promise<ComponentType>,
     layout: (name) => {
