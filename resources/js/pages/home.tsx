@@ -1,6 +1,7 @@
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import { FormEvent, useState } from 'react';
 import { Search, Star } from 'lucide-react';
+import InputError from '@/components/input-error';
 import VenueCard from '@/components/venue-card';
 import { formatPrice } from '@/lib/money';
 import venues from '@/routes/venues';
@@ -17,6 +18,12 @@ export default function Home({
     const [category, setCategory] = useState('');
     const [capacity, setCapacity] = useState('');
     const [query, setQuery] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [email, setEmail] = useState('');
+    const [zipCode, setZipCode] = useState('');
+    const [message, setMessage] = useState('');
+    const { errors } = usePage().props as { errors: any };
     const spotlightVenue = featuredVenues[0] ?? latestVenues[0] ?? null;
 
     function search(e: FormEvent) {
@@ -37,11 +44,23 @@ export default function Home({
         router.get(venues.index.url(), params);
     }
 
+    function submitInquiry(e: FormEvent) {
+        e.preventDefault();
+
+        router.post('/contact', {
+            first_name: firstName,
+            last_name: lastName,
+            email,
+            zip_code: zipCode,
+            message,
+        });
+    }
+
     return (
         <>
             <Head title="Find Your Perfect Venue" />
 
-            <section className="relative min-h-[92vh] overflow-hidden text-white">
+            <section className="relative min-h-screen overflow-hidden text-white">
                 <img
                     src="/wedding-venues-hero-section-banner.jpg"
                     alt="Wedding venues hero background"
@@ -50,7 +69,7 @@ export default function Home({
                 <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-black/20" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30" />
 
-                <div className="relative mx-auto flex min-h-[92vh] max-w-8xl flex-col px-4 pb-10 pt-28 sm:px-6 lg:px-8">
+                <div className="relative mx-auto flex min-h-screen max-w-8xl flex-col px-4 pb-10 pt-28 sm:px-6 lg:px-8">
                     <div className="max-w-2xl">
                         <p className="text-sm tracking-[0.3em] text-white/70 uppercase">
                             BLVD GUIDE Marketplace
@@ -291,38 +310,63 @@ export default function Home({
                             </p>
                         </div>
                         <div className="rounded-4xl border border-white/15 bg-white/95 p-8 shadow-2xl backdrop-blur-xl dark:bg-slate-900/95">
-                            <form className="space-y-4">
+                            <form onSubmit={submitInquiry} className="space-y-4">
                                 <div className="grid gap-4 sm:grid-cols-2">
-                                    <input
-                                        type="text"
-                                        placeholder="First Name"
-                                        className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
-                                    />
-                                    <input
-                                        type="text"
-                                        placeholder="Last Name"
-                                        className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
-                                    />
+                                    <label className="block">
+                                        <input
+                                            type="text"
+                                            value={firstName}
+                                            onChange={(event) => setFirstName(event.target.value)}
+                                            placeholder="First Name"
+                                            className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
+                                        />
+                                        <InputError message={errors.first_name} className="mt-2" />
+                                    </label>
+                                    <label className="block">
+                                        <input
+                                            type="text"
+                                            value={lastName}
+                                            onChange={(event) => setLastName(event.target.value)}
+                                            placeholder="Last Name"
+                                            className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
+                                        />
+                                        <InputError message={errors.last_name} className="mt-2" />
+                                    </label>
                                 </div>
                                 <div className="grid gap-4 sm:grid-cols-2">
-                                    <input
-                                        type="email"
-                                        placeholder="Email address"
-                                        className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
-                                    />
-                                    <input
-                                        type="text"
-                                        placeholder="Zip Code"
-                                        className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
-                                    />
+                                    <label className="block">
+                                        <input
+                                            type="email"
+                                            value={email}
+                                            onChange={(event) => setEmail(event.target.value)}
+                                            placeholder="Email address"
+                                            className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
+                                        />
+                                        <InputError message={errors.email} className="mt-2" />
+                                    </label>
+                                    <label className="block">
+                                        <input
+                                            type="text"
+                                            value={zipCode}
+                                            onChange={(event) => setZipCode(event.target.value)}
+                                            placeholder="Zip Code"
+                                            className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
+                                        />
+                                        <InputError message={errors.zip_code} className="mt-2" />
+                                    </label>
                                 </div>
-                                <textarea
-                                    placeholder="Please type your message here..."
-                                    rows={5}
-                                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
-                                />
+                                <label className="block">
+                                    <textarea
+                                        value={message}
+                                        onChange={(event) => setMessage(event.target.value)}
+                                        placeholder="Please type your message here..."
+                                        rows={5}
+                                        className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
+                                    />
+                                    <InputError message={errors.message} className="mt-2" />
+                                </label>
                                 <button
-                                    type="button"
+                                    type="submit"
                                     className="inline-flex w-full items-center justify-center rounded-2xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
                                 >
                                     Submit Inquiry
