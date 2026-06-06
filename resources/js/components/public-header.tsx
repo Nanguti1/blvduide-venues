@@ -25,7 +25,7 @@ export default function PublicHeader() {
     const navLinkClass =
         'inline-flex items-center rounded-full px-4 py-2 text-sm font-medium text-white/90 transition hover:text-white hover:bg-white/10';
     const standardNavLinkClass =
-        'inline-flex items-center rounded-full px-3 py-2 text-sm font-medium text-foreground/80 transition hover:text-foreground hover:bg-slate-100 dark:hover:bg-slate-800';
+        'inline-flex items-center rounded-full px-4 py-3 text-sm font-medium text-foreground/80 transition hover:text-foreground hover:bg-slate-100 dark:hover:bg-slate-800';
 
     return (
         <header
@@ -33,15 +33,16 @@ export default function PublicHeader() {
                 'z-50 w-full',
                 isHome
                     ? 'absolute top-0 left-0 pt-4 sm:pt-6'
-                    : 'sticky top-0 border-b border-border/60 bg-background/90 backdrop-blur-md',
+                    : 'sticky top-0 border-b border-border/60 bg-background/90 backdrop-blur-md py-4',
             )}
         >
             <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
                 <div
                     className={cn(
                         'flex items-center justify-between gap-4',
-                        isHome &&
-                            'rounded-full border border-white/20 bg-white/10 px-4 py-3 shadow-lg backdrop-blur-xl sm:px-6',
+                        isHome
+                            ? 'rounded-full border border-white/20 bg-white/10 px-4 py-3 shadow-lg backdrop-blur-xl sm:px-6'
+                            : 'rounded-full border border-slate-200 bg-white/95 px-4 py-3 shadow-sm dark:border-slate-700 dark:bg-slate-950/95',
                     )}
                 >
                     <Link

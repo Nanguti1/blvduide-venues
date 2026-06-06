@@ -36,11 +36,22 @@ export default function PublicLayout({
         <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
             <PublicHeader />
             {!isHome && (
-                <section className="border-b border-slate-200 bg-slate-50/90 py-5 text-slate-900 dark:border-slate-800 dark:bg-slate-950/80 dark:text-slate-100">
-                    <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
-                        <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">
-                            {pageTitle}
-                        </h1>
+                <section className="relative overflow-hidden border-b border-slate-200 bg-slate-50/90 dark:border-slate-800 dark:bg-slate-950/80">
+                    <img
+                        src="/wedding-venues-hero-section-banner.jpg"
+                        alt="Page hero background"
+                        className="absolute inset-0 h-full w-full object-cover opacity-60"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-950/60 to-slate-950/20" />
+                    <div className="relative mx-auto flex min-h-[220px] max-h-[300px] items-end px-4 py-6 sm:px-6 lg:px-8">
+                        <div>
+                            <p className="text-sm uppercase tracking-[0.35em] text-white/70">
+                                Venue Marketplace
+                            </p>
+                            <h1 className="mt-3 text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+                                {pageTitle}
+                            </h1>
+                        </div>
                     </div>
                 </section>
             )}
