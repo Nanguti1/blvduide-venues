@@ -1,6 +1,7 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { Heart, Star } from 'lucide-react';
 import VenueCard from '@/components/venue-card';
+import { formatPrice } from '@/lib/money';
 import venues from '@/routes/venues';
 
 export default function VenueShow() {
@@ -85,7 +86,7 @@ export default function VenueShow() {
                                 Price
                             </p>
                             <p className="mt-3 text-4xl font-semibold">
-                                ${venue.price ?? 'Contact'}
+                                {formatPrice(venue.price)}
                             </p>
                         </div>
                         <div className="flex items-center gap-2 text-yellow-500">
@@ -179,7 +180,7 @@ export default function VenueShow() {
                             <button
                                 type="submit"
                                 disabled={reviewForm.processing}
-                                className="mt-4 rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white dark:bg-white dark:text-slate-900"
+                                className="mt-4 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
                             >
                                 Submit review
                             </button>

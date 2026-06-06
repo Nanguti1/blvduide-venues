@@ -1,4 +1,5 @@
 import { Head, Link, usePage } from '@inertiajs/react';
+import DashboardPageShell from '@/components/dashboard-page-shell';
 import { dashboard } from '@/routes';
 import dashboardVenues from '@/routes/dashboard/venues';
 import venues from '@/routes/venues';
@@ -18,15 +19,33 @@ export default function Dashboard({
     return (
         <>
             <Head title="Dashboard" />
-            <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-                <h1 className="text-3xl font-semibold text-slate-900 dark:text-white">
-                    Welcome back, {auth.user?.name}
-                </h1>
-                <p className="mt-2 text-slate-500">
-                    Manage your venue listings and subscription from here.
-                </p>
-
-                <div className="mt-8 grid gap-4 md:grid-cols-4">
+            <DashboardPageShell
+                title={`Welcome back, ${auth.user?.name}`}
+                description="Manage your venue listings and subscription from here."
+                action={
+                    <>
+                        <Link
+                            href={dashboardVenues.create.url()}
+                            className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
+                        >
+                            Add venue
+                        </Link>
+                        <Link
+                            href={dashboardVenues.index.url()}
+                            className="inline-flex items-center justify-center rounded-full border border-border px-5 py-3 text-sm font-semibold transition hover:bg-muted"
+                        >
+                            My listings
+                        </Link>
+                        <Link
+                            href={venues.index.url()}
+                            className="inline-flex items-center justify-center rounded-full border border-border px-5 py-3 text-sm font-semibold transition hover:bg-muted"
+                        >
+                            Browse marketplace
+                        </Link>
+                    </>
+                }
+            >
+                <div className="grid gap-4 md:grid-cols-4">
                     {[
                         { label: 'Listings', value: stats.listings },
                         { label: 'Pending approval', value: stats.pending },
@@ -35,37 +54,18 @@ export default function Dashboard({
                     ].map((item) => (
                         <div
                             key={item.label}
-                            className="rounded-3xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900"
+                            className="rounded-3xl border border-border bg-card p-6"
                         >
-                            <p className="text-sm text-slate-500">{item.label}</p>
-                            <p className="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">
+                            <p className="text-sm text-muted-foreground">
+                                {item.label}
+                            </p>
+                            <p className="mt-2 text-2xl font-semibold text-foreground">
                                 {item.value}
                             </p>
                         </div>
                     ))}
                 </div>
-
-                <div className="mt-8 flex flex-wrap gap-3">
-                    <Link
-                        href={dashboardVenues.create.url()}
-                        className="rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white dark:bg-white dark:text-slate-900"
-                    >
-                        Add venue
-                    </Link>
-                    <Link
-                        href={dashboardVenues.index.url()}
-                        className="rounded-full border border-slate-300 px-5 py-3 text-sm font-semibold dark:border-slate-600"
-                    >
-                        My listings
-                    </Link>
-                    <Link
-                        href={venues.index.url()}
-                        className="rounded-full border border-slate-300 px-5 py-3 text-sm font-semibold dark:border-slate-600"
-                    >
-                        Browse marketplace
-                    </Link>
-                </div>
-            </div>
+            </DashboardPageShell>
         </>
     );
 }

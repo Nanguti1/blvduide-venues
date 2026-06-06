@@ -1,5 +1,6 @@
 import { Link } from '@inertiajs/react';
 import { Star } from 'lucide-react';
+import { formatPrice } from '@/lib/money';
 import venues from '@/routes/venues';
 
 export default function VenueCard({ venue }: { venue: any }) {
@@ -36,12 +37,12 @@ export default function VenueCard({ venue }: { venue: any }) {
                         From
                     </p>
                     <p className="text-xl font-semibold text-slate-900 dark:text-slate-100">
-                        ${venue.price ?? 'Contact'}
+                        {formatPrice(venue.price)}
                     </p>
                 </div>
                 <Link
                     href={venues.show.url(venue.slug)}
-                    className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200"
+                    className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
                 >
                     View
                 </Link>

@@ -1,29 +1,44 @@
-import { Head } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
+import DashboardPageShell from '@/components/dashboard-page-shell';
+import { formatPrice } from '@/lib/money';
+import dashboardPackages from '@/routes/dashboard/packages';
 
 export default function DashboardPackagesIndex({ packages }: any) {
+    const { auth } = usePage().props as {
+        auth: { user?: { permissions?: string[] } };
+    };
+    const canManage = auth.user?.permissions?.includes('packages.manage');
+
     return (
         <>
             <Head title="Packages" />
-            <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
-                <h1 className="text-3xl font-semibold text-slate-900 dark:text-white">
-                    Packages
-                </h1>
-                <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                    Review plan settings, pricing, and listing allowances.
-                </p>
-                <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+            <DashboardPageShell
+                title="Packages"
+                description="Review plan settings, pricing, and listing allowances."
+                action={
+                    canManage ? (
+                        <Link
+                            href={dashboardPackages.create.url()}
+                            className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
+                        >
+                            Add Package
+                        </Link>
+                    ) : null
+                }
+            >
+                <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
                     {packages.map((packageItem: any) => (
                         <div
                             key={packageItem.id}
-                            className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900"
+                            className="rounded-3xl border border-border bg-card p-6 shadow-sm"
                         >
-                            <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
+                            <h2 className="text-xl font-semibold text-foreground">
                                 {packageItem.name}
                             </h2>
-                            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                                ${packageItem.price}
+                            <p className="mt-2 text-sm text-muted-foreground">
+                                {formatPrice(packageItem.price)}
                             </p>
-                            <ul className="mt-4 space-y-2 text-sm text-slate-600 dark:text-slate-300">
+                            <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
                                 <li>{packageItem.duration_days} days</li>
                                 <li>{packageItem.max_listings} listings</li>
                                 <li>
@@ -31,10 +46,30 @@ export default function DashboardPackagesIndex({ packages }: any) {
                                     per listing
                                 </li>
                             </ul>
+                            <div className="mt-5 flex flex-wrap gap-2">
+                                <Link
+                                    href={dashboardPackages.show.url(
+                                        packageItem.id,
+                                    )}
+                                    className="rounded-full border border-border px-4 py-2 text-sm transition hover:bg-muted"
+                                >
+                                    View
+                                </Link>
+                                {canManage ? (
+                                    <Link
+                                        href={dashboardPackages.edit.url(
+                                            packageItem.id,
+                                        )}
+                                        className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
+                                    >
+                                        Edit
+                                    </Link>
+                                ) : null}
+                            </div>
                         </div>
                     ))}
                 </div>
-            </div>
+            </DashboardPageShell>
         </>
     );
 }

@@ -45,9 +45,11 @@ class VenueController extends Controller
 
         $subscription = $user->activeSubscription();
 
-        abort_unless($subscription, 403, 'An active subscription is required to create a venue.');
+        if (! $subscription && ! $user->hasRole('Super Admin')) {
+            abort(403, 'An active subscription is required to create a venue.');
+        }
 
-        if ($user->venues()->count() >= $subscription->package->max_listings) {
+        if ($subscription && $user->venues()->count() >= $subscription->package->max_listings) {
             return back()->with('error', 'Your current package listing allowance has been reached.');
         }
 

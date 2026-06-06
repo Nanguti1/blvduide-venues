@@ -275,7 +275,7 @@ export default function VenueForm({
                             onClick={() => toggleFeature(feature.id)}
                             className={`rounded-full px-3 py-1 text-sm transition ${
                                 data.features.includes(feature.id)
-                                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900'
+                                    ? 'bg-primary text-primary-foreground'
                                     : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
                             }`}
                         >
@@ -313,7 +313,7 @@ export default function VenueForm({
                 <button
                     type="submit"
                     disabled={processing}
-                    className="rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:opacity-50 dark:bg-white dark:text-slate-900"
+                    className="rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 disabled:opacity-50"
                 >
                     {submitLabel}
                 </button>
@@ -321,7 +321,7 @@ export default function VenueForm({
                     type="button"
                     disabled={processing}
                     onClick={(e) => submit(e, true)}
-                    className="rounded-full border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-600 dark:text-slate-200"
+                    className="rounded-xl border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-600 dark:text-slate-200"
                 >
                     Save &amp; submit for approval
                 </button>

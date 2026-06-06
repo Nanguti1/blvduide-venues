@@ -1,0 +1,1 @@
+function e(e){if(e==null||e===``)return`Contact`;let t=typeof e==`string`?parseFloat(e):e;return Number.isNaN(t)?`Contact`:`Kes ${t.toLocaleString(`en-KE`)}`}export{e as t};

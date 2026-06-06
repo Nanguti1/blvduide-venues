@@ -10,7 +10,7 @@ import AuthLayout from '@/layouts/auth-layout';
 import PublicLayout from '@/layouts/public-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const appName = import.meta.env.VITE_APP_NAME || 'BLVD GUIDE';
 
 function isPublicPage(name: string): boolean {
     return (
@@ -42,7 +42,7 @@ createInertiaApp({
     },
     strictMode: true,
     progress: {
-        color: '#4B5563',
+        color: '#7ec0da',
     },
     setup({ el, App, props }) {
         if (!el) {

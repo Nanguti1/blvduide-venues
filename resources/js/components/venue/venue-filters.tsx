@@ -72,7 +72,7 @@ export default function VenueFilters({
                     category?.name ?? locale?.name ?? 'Discover Venues'
                 }
             />
-            <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-8xl px-4 py-10 sm:px-6 lg:px-8">
                 <header className="mb-8">
                     <p className="text-sm tracking-[0.24em] text-slate-500 uppercase">
                         Venue marketplace
@@ -187,7 +187,7 @@ export default function VenueFilters({
                     </label>
                     <button
                         type="submit"
-                        className="rounded-full bg-slate-900 px-4 py-3 text-sm font-semibold text-white md:col-span-2 dark:bg-white dark:text-slate-900"
+                        className="rounded-full bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 md:col-span-2"
                     >
                         Apply filters
                     </button>
@@ -218,7 +218,7 @@ export default function VenueFilters({
                                 }}
                                 className={`rounded-full px-3 py-1 text-sm ${
                                     active
-                                        ? 'bg-slate-900 text-white'
+                                        ? 'bg-primary text-primary-foreground'
                                         : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
                                 }`}
                             >

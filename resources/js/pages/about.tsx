@@ -6,10 +6,10 @@ export default function About() {
             <Head title="About Us" />
             <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
                 <h1 className="text-4xl font-semibold text-slate-900 dark:text-white">
-                    About BlvdGuide
+                    About BLVD GUIDE
                 </h1>
                 <p className="mt-6 text-lg leading-8 text-slate-600 dark:text-slate-300">
-                    BlvdGuide is a venue marketplace built for event planners,
+                    BLVD GUIDE is a venue marketplace built for event planners,
                     businesses, and creatives who need exceptional spaces. From
                     coworking studios to wedding gardens, we connect hosts with
                     the right venues through curated listings, transparent

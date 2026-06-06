@@ -1,5 +1,6 @@
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import VenueForm from '@/components/venue/venue-form';
+import type { Auth } from '@/types/auth';
 
 export default function DashboardVenueCreate({
     categories,
@@ -7,7 +8,12 @@ export default function DashboardVenueCreate({
     countries,
     subscription,
 }: any) {
-    if (!subscription) {
+    const page = usePage();
+    const { auth } = page.props as { auth: Auth };
+    const canCreateVenue =
+        !!subscription || auth.user?.roles?.includes('Super Admin');
+
+    if (!canCreateVenue) {
         return (
             <>
                 <Head title="Add Venue" />
@@ -17,8 +23,7 @@ export default function DashboardVenueCreate({
                             Active subscription required
                         </h1>
                         <p className="mt-2 text-amber-800 dark:text-amber-200">
-                            Choose a package from Subscriptions before creating
-                            a listing.
+                            Choose a package from Subscriptions before creating a listing.
                         </p>
                     </div>
                 </div>
@@ -29,14 +34,17 @@ export default function DashboardVenueCreate({
     return (
         <>
             <Head title="Add Venue" />
-            <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
+            <div className="w-full px-4 py-10 sm:px-6 lg:px-8">
                 <div className="mb-6">
                     <h1 className="text-3xl font-semibold text-slate-900 dark:text-white">
                         Add New Venue
                     </h1>
                     <p className="mt-2 text-sm text-slate-500">
-                        Package: {subscription.package?.name} ·{' '}
-                        {subscription.package?.max_listings} listings allowed
+                        {subscription ? (
+                            <>Package: {subscription.package?.name} · {subscription.package?.max_listings} listings allowed</>
+                        ) : (
+                            <>Super Admin privileges allow listing without an active subscription.</>
+                        )}
                     </p>
                 </div>
                 <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">

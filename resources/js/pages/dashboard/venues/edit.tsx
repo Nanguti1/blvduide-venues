@@ -10,7 +10,7 @@ export default function DashboardVenueEdit({
     return (
         <>
             <Head title="Edit Venue" />
-            <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
+            <div className="w-full px-4 py-10 sm:px-6 lg:px-8">
                 <div className="mb-6">
                     <h1 className="text-3xl font-semibold text-slate-900 dark:text-white">
                         Edit Listing
