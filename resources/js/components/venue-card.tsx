@@ -1,5 +1,6 @@
 import { Link } from '@inertiajs/react';
 import { Star } from 'lucide-react';
+import venues from '@/routes/venues';
 
 export default function VenueCard({ venue }: { venue: any }) {
     return (
@@ -39,7 +40,7 @@ export default function VenueCard({ venue }: { venue: any }) {
                     </p>
                 </div>
                 <Link
-                    href={route('venues.show', venue.slug)}
+                    href={venues.show.url(venue.slug)}
                     className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200"
                 >
                     View

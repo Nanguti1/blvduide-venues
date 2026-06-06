@@ -46,12 +46,18 @@ class VenueController extends Controller
         ]);
     }
 
-    public function show(Venue $venue)
+    public function show(Venue $venue, Request $request)
     {
         abort_if($venue->approval_status !== VenueApprovalStatus::Published, 404);
 
+        $user = $request->user();
+
         return Inertia::render('venues/show', [
-            'venue' => $venue->load(['category', 'features', 'country', 'county', 'city', 'locale', 'user', 'reviews.user']),
+            'venue' => $venue->load(['category', 'features', 'country', 'county', 'city', 'locale', 'user']),
+            'approvedReviews' => $venue->reviews()->approved()->with('user')->latest()->get(),
+            'isFavorited' => $user
+                ? $user->favoriteVenues()->where('venue_id', $venue->id)->exists()
+                : false,
             'related' => Venue::published()
                 ->where('venue_category_id', $venue->venue_category_id)
                 ->where('id', '!=', $venue->id)

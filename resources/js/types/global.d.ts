@@ -1,5 +1,4 @@
 import type { Auth } from '@/types/auth';
-import type { RouteParams } from '@/routes/helpers';
 
 declare module 'react' {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -13,16 +12,18 @@ declare module '@inertiajs/core' {
         sharedPageProps: {
             name: string;
             auth: Auth;
+            navCategories?: Array<{
+                id: number;
+                name: string;
+                slug: string;
+                icon?: string | null;
+            }>;
+            flash?: {
+                success?: string;
+                error?: string;
+            };
             sidebarOpen: boolean;
             [key: string]: unknown;
         };
     }
-}
-
-declare global {
-    interface Window {
-        route: (name: string, params?: RouteParams) => string;
-    }
-
-    function route(name: string, params?: RouteParams): string;
 }

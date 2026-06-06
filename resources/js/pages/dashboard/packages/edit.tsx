@@ -1,4 +1,5 @@
 import { Head, useForm } from '@inertiajs/react';
+import dashboardPackages from '@/routes/dashboard/packages';
 
 export default function PackageEdit({ package: pkg }: any) {
     const { data, setData, put, processing } = useForm({
@@ -15,7 +16,7 @@ export default function PackageEdit({ package: pkg }: any) {
 
     function submit(e: React.FormEvent) {
         e.preventDefault();
-        put(route('dashboard.packages.update', pkg.id));
+        put(dashboardPackages.update.url(pkg.id));
     }
 
     return (

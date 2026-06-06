@@ -1,25 +1,69 @@
-import { Head } from '@inertiajs/react';
-import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { dashboard } from '@/routes';
+import dashboardVenues from '@/routes/dashboard/venues';
+import venues from '@/routes/venues';
 
-export default function Dashboard() {
+export default function Dashboard({
+    stats,
+}: {
+    stats: {
+        listings: number;
+        pending: number;
+        favorites: number;
+        subscription: string;
+    };
+}) {
+    const { auth } = usePage().props as { auth: { user?: { name: string } } };
+
     return (
         <>
             <Head title="Dashboard" />
-            <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                    </div>
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                    </div>
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                    </div>
+            <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+                <h1 className="text-3xl font-semibold text-slate-900 dark:text-white">
+                    Welcome back, {auth.user?.name}
+                </h1>
+                <p className="mt-2 text-slate-500">
+                    Manage your venue listings and subscription from here.
+                </p>
+
+                <div className="mt-8 grid gap-4 md:grid-cols-4">
+                    {[
+                        { label: 'Listings', value: stats.listings },
+                        { label: 'Pending approval', value: stats.pending },
+                        { label: 'Favorites', value: stats.favorites },
+                        { label: 'Subscription', value: stats.subscription },
+                    ].map((item) => (
+                        <div
+                            key={item.label}
+                            className="rounded-3xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900"
+                        >
+                            <p className="text-sm text-slate-500">{item.label}</p>
+                            <p className="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">
+                                {item.value}
+                            </p>
+                        </div>
+                    ))}
                 </div>
-                <div className="relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
-                    <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
+
+                <div className="mt-8 flex flex-wrap gap-3">
+                    <Link
+                        href={dashboardVenues.create.url()}
+                        className="rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white dark:bg-white dark:text-slate-900"
+                    >
+                        Add venue
+                    </Link>
+                    <Link
+                        href={dashboardVenues.index.url()}
+                        className="rounded-full border border-slate-300 px-5 py-3 text-sm font-semibold dark:border-slate-600"
+                    >
+                        My listings
+                    </Link>
+                    <Link
+                        href={venues.index.url()}
+                        className="rounded-full border border-slate-300 px-5 py-3 text-sm font-semibold dark:border-slate-600"
+                    >
+                        Browse marketplace
+                    </Link>
                 </div>
             </div>
         </>

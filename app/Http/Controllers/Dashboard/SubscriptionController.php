@@ -41,11 +41,17 @@ class SubscriptionController extends Controller
         return redirect()->route('dashboard.subscriptions.show', $subscription->id)->with('success', 'Subscription created (pending).');
     }
 
-    public function activate(Subscription $subscription, Request $request, SubscriptionService $service)
+    public function activate(Subscription $subscription, Request $request)
     {
         $this->authorize('manage', $subscription);
 
-        $service->assignPackage($subscription->user, $subscription->package, $request->input('transaction_reference'), PaymentStatus::Completed);
+        $subscription->update([
+            'payment_status' => PaymentStatus::Completed,
+            'transaction_reference' => $request->input('transaction_reference', $subscription->transaction_reference),
+            'status' => \App\Enums\SubscriptionStatus::Active,
+            'starts_at' => now(),
+            'expires_at' => now()->addDays($subscription->package->duration_days),
+        ]);
 
         return back()->with('success', 'Subscription activated.');
     }

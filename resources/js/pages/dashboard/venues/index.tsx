@@ -1,4 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
+import dashboardVenues from '@/routes/dashboard/venues';
 
 export default function DashboardVenuesIndex({ venues }: { venues: any }) {
     return (
@@ -16,7 +17,7 @@ export default function DashboardVenuesIndex({ venues }: { venues: any }) {
                         </p>
                     </div>
                     <Link
-                        href={route('dashboard.venues.create')}
+                        href={dashboardVenues.create.url()}
                         className="inline-flex items-center justify-center rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-700 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200"
                     >
                         Add Venue
@@ -39,8 +40,7 @@ export default function DashboardVenuesIndex({ venues }: { venues: any }) {
                                 </div>
                                 <div className="flex flex-wrap gap-2">
                                     <Link
-                                        href={route(
-                                            'dashboard.venues.edit',
+                                        href={dashboardVenues.edit.url(
                                             venue.slug,
                                         )}
                                         className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm text-slate-900 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
@@ -48,8 +48,7 @@ export default function DashboardVenuesIndex({ venues }: { venues: any }) {
                                         Edit
                                     </Link>
                                     <Link
-                                        href={route(
-                                            'dashboard.venues.submit',
+                                        href={dashboardVenues.submit.url(
                                             venue.slug,
                                         )}
                                         method="patch"

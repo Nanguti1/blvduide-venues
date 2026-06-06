@@ -72,7 +72,12 @@ class Venue extends Model implements HasMedia
 
     public function features(): BelongsToMany
     {
-        return $this->belongsToMany(VenueFeature::class);
+        return $this->belongsToMany(
+            VenueFeature::class,
+            'venue_feature',
+            'venue_id',
+            'venue_feature_id',
+        );
     }
 
     public function reviews(): HasMany

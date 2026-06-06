@@ -2,16 +2,16 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\VenueOperationalStatus;
+use App\Models\Venue;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
-use App\Enums\VenueApprovalStatus;
-use App\Enums\VenueOperationalStatus;
 
 class StoreVenueRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->can('venues.create') ?? false;
+        return $this->user()?->can('create', Venue::class) ?? false;
     }
 
     public function rules(): array

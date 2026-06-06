@@ -1,4 +1,5 @@
 import { Head, useForm } from '@inertiajs/react';
+import dashboardPackages from '@/routes/dashboard/packages';
 
 export default function PackageCreate() {
     const { data, setData, post, processing } = useForm({
@@ -15,7 +16,7 @@ export default function PackageCreate() {
 
     function submit(e: React.FormEvent) {
         e.preventDefault();
-        post(route('dashboard.packages.store'));
+        post(dashboardPackages.store.url());
     }
 
     return (

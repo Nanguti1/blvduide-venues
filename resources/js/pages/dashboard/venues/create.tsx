@@ -1,75 +1,51 @@
 import { Head } from '@inertiajs/react';
+import VenueForm from '@/components/venue/venue-form';
 
 export default function DashboardVenueCreate({
     categories,
+    features,
+    countries,
     subscription,
 }: any) {
+    if (!subscription) {
+        return (
+            <>
+                <Head title="Add Venue" />
+                <div className="mx-auto max-w-3xl px-4 py-10">
+                    <div className="rounded-3xl border border-amber-200 bg-amber-50 p-8 dark:border-amber-900 dark:bg-amber-950/30">
+                        <h1 className="text-2xl font-semibold text-amber-900 dark:text-amber-100">
+                            Active subscription required
+                        </h1>
+                        <p className="mt-2 text-amber-800 dark:text-amber-200">
+                            Choose a package from Subscriptions before creating
+                            a listing.
+                        </p>
+                    </div>
+                </div>
+            </>
+        );
+    }
+
     return (
         <>
             <Head title="Add Venue" />
             <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
-                <div className="mb-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+                <div className="mb-6">
                     <h1 className="text-3xl font-semibold text-slate-900 dark:text-white">
                         Add New Venue
                     </h1>
-                    <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                        Create your listing and submit it for admin review once
-                        you're ready.
+                    <p className="mt-2 text-sm text-slate-500">
+                        Package: {subscription.package?.name} ·{' '}
+                        {subscription.package?.max_listings} listings allowed
                     </p>
                 </div>
-                <div className="grid gap-6 lg:grid-cols-[1.3fr_0.7fr]">
-                    <div className="space-y-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-                        <p className="text-sm font-semibold tracking-[0.24em] text-slate-500 uppercase">
-                            Listing details
-                        </p>
-                        <div className="grid gap-4">
-                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-                                Title
-                            </label>
-                            <input className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" />
-                        </div>
-                        <div className="grid gap-4 md:grid-cols-2">
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-                                    Category
-                                </label>
-                                <select className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                                    {categories.map((category: any) => (
-                                        <option
-                                            key={category.id}
-                                            value={category.id}
-                                        >
-                                            {category.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-                                    Price
-                                </label>
-                                <input className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" />
-                            </div>
-                        </div>
-                    </div>
-                    <aside className="space-y-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-                        <div>
-                            <p className="text-sm text-slate-500">
-                                Current package
-                            </p>
-                            <p className="mt-2 font-semibold text-slate-900 dark:text-slate-100">
-                                {subscription?.package?.name ??
-                                    'No active subscription'}
-                            </p>
-                        </div>
-                        <div>
-                            <p className="text-sm text-slate-500">Allowance</p>
-                            <p className="mt-2 text-slate-900 dark:text-slate-100">
-                                {subscription?.package?.max_listings ?? 0}{' '}
-                                listings
-                            </p>
-                        </div>
-                    </aside>
+                <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+                    <VenueForm
+                        categories={categories}
+                        features={features}
+                        countries={countries}
+                        submitLabel="Save as draft"
+                    />
                 </div>
             </div>
         </>

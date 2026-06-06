@@ -1,4 +1,5 @@
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
+import dashboardPackages from '@/routes/dashboard/packages';
 
 export default function DashboardSubscriptionsIndex({ subscriptions }: any) {
     return (
@@ -12,15 +13,15 @@ export default function DashboardSubscriptionsIndex({ subscriptions }: any) {
                     Track active packages, renewal windows, and payment status.
                 </p>
                 <div className="mb-6">
-                    <a
-                        href={route('dashboard.packages.index')}
+                    <Link
+                        href={dashboardPackages.index.url()}
                         className="rounded-full bg-slate-800 px-4 py-2 text-white"
                     >
                         Manage Packages
-                    </a>
+                    </Link>
                 </div>
                 <div className="mt-8 space-y-4">
-                    {subscriptions.data?.map((subscription: any) => (
+                    {(subscriptions ?? []).map((subscription: any) => (
                         <div
                             key={subscription.id}
                             className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900"

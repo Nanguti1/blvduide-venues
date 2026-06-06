@@ -11,5 +11,13 @@ class VenueFeature extends Model
 
     protected $fillable = ['name', 'slug'];
 
-    public function venues(): BelongsToMany { return $this->belongsToMany(Venue::class); }
+    public function venues(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Venue::class,
+            'venue_feature',
+            'venue_feature_id',
+            'venue_id',
+        );
+    }
 }

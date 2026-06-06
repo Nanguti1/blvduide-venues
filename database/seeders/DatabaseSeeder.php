@@ -2,15 +2,14 @@
 
 namespace Database\Seeders;
 
+use App\Models\Package;
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Services\SubscriptionService;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
         $this->call([
@@ -21,9 +20,31 @@ class DatabaseSeeder extends Seeder
             PackageSeeder::class,
         ]);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@blvdguide.test'],
+            [
+                'name' => 'Super Admin',
+                'password' => Hash::make('password'),
+                'email_verified_at' => now(),
+            ],
+        );
+        $admin->assignRole('Super Admin');
+
+        $agent = User::firstOrCreate(
+            ['email' => 'agent@blvdguide.test'],
+            [
+                'name' => 'Demo Agent',
+                'password' => Hash::make('password'),
+                'email_verified_at' => now(),
+            ],
+        );
+        $agent->assignRole('Agent');
+
+        $premium = Package::where('name', 'Premium')->first();
+        if ($premium) {
+            app(SubscriptionService::class)->assignPackage($agent, $premium, 'SEED-ACTIVATION');
+        }
+
+        $this->call(DemoVenueSeeder::class);
     }
 }

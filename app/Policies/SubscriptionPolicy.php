@@ -17,7 +17,7 @@ class SubscriptionPolicy
         return $subscription->user_id === $user->id;
     }
 
-    public function manage(User $user): bool
+    public function manage(User $user, ?Subscription $subscription = null): bool
     {
         return $user->can('subscriptions.manage');
     }

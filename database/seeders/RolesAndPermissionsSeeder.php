@@ -26,5 +26,8 @@ class RolesAndPermissionsSeeder extends Seeder
         $agent->syncPermissions([
             'venues.view-own', 'venues.create', 'venues.update-own', 'venues.delete-own',
         ]);
+
+        Permission::findOrCreate('subscriptions.manage', 'web');
+        $superAdmin->givePermissionTo('subscriptions.manage');
     }
 }
