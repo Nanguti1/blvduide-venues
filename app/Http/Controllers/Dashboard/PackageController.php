@@ -12,7 +12,7 @@ class PackageController extends Controller
 {
     public function index()
     {
-        $packages = Package::orderBy('price')->get();
+        $packages = Package::orderBy('price')->paginate(20);
 
         return Inertia::render('dashboard/packages/index', [
             'packages' => $packages,

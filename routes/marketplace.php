@@ -20,6 +20,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('venues/{venue}/favorite', [FavoriteController::class, 'toggle'])->name('venues.favorite.toggle');
 
     Route::prefix('dashboard')->name('dashboard.')->group(function () {
+        Route::delete('venues/bulk-delete', [DashboardVenueController::class, 'bulkDestroy'])->name('venues.bulk-destroy');
         Route::resource('venues', DashboardVenueController::class)->except(['show']);
         Route::patch('venues/{venue}/submit', [DashboardVenueController::class, 'submitForApproval'])->name('venues.submit');
 

@@ -1,27 +1,31 @@
 import { Head, Link, router } from '@inertiajs/react';
 import DashboardPageShell from '@/components/dashboard-page-shell';
 import Pagination from '@/components/pagination';
+import venues from '@/routes/venues';
 
-export default function ApprovalsIndex({ venues }: any) {
+export default function AdminReviewsIndex({ reviews }: any) {
     return (
         <>
-            <Head title="Venue Approvals" />
+            <Head title="Review Moderation" />
             <DashboardPageShell
-                title="Venue Approvals"
-                description="Review pending listings before they go live."
+                title="Review Moderation"
+                description="Approve or reject guest reviews across all venues."
             >
                 <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
                     <table className="min-w-full divide-y divide-border text-left text-sm">
                         <thead className="bg-slate-100 text-slate-700 dark:bg-slate-900 dark:text-slate-200">
                             <tr>
                                 <th className="px-6 py-4 font-semibold">
-                                    Title
+                                    Venue
                                 </th>
                                 <th className="px-6 py-4 font-semibold">
-                                    Category
+                                    Reviewer
                                 </th>
                                 <th className="px-6 py-4 font-semibold">
-                                    Owner
+                                    Comment
+                                </th>
+                                <th className="px-6 py-4 font-semibold">
+                                    Rating
                                 </th>
                                 <th className="px-6 py-4 font-semibold">
                                     Status
@@ -32,36 +36,44 @@ export default function ApprovalsIndex({ venues }: any) {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-border bg-white dark:bg-slate-950">
-                            {venues.data?.map((venue: any) => (
+                            {reviews.data?.map((review: any) => (
                                 <tr
-                                    key={venue.id}
+                                    key={review.id}
                                     className="hover:bg-slate-50 dark:hover:bg-slate-900"
                                 >
                                     <td className="px-6 py-4 align-top text-slate-900 dark:text-slate-100">
-                                        {venue.title}
+                                        {review.venue?.title ?? 'Deleted venue'}
                                     </td>
                                     <td className="px-6 py-4 align-top text-slate-600 dark:text-slate-300">
-                                        {venue.category?.name}
+                                        {review.user?.name ?? 'Guest'}
                                     </td>
                                     <td className="px-6 py-4 align-top text-slate-600 dark:text-slate-300">
-                                        {venue.user?.name}
+                                        {review.comment?.slice(0, 90)}
+                                        {review.comment?.length > 90 ? '…' : ''}
                                     </td>
                                     <td className="px-6 py-4 align-top text-slate-600 dark:text-slate-300">
-                                        {venue.approval_status}
+                                        {review.rating ?? '–'}
+                                    </td>
+                                    <td className="px-6 py-4 align-top text-slate-600 dark:text-slate-300">
+                                        {review.status}
                                     </td>
                                     <td className="px-6 py-4 text-right align-top">
                                         <div className="flex flex-wrap justify-end gap-2">
-                                            <Link
-                                                href={`/venues/${venue.slug}`}
-                                                className="rounded-full border border-border px-4 py-2 text-sm transition hover:bg-muted"
-                                            >
-                                                Preview
-                                            </Link>
+                                            {review.venue?.slug ? (
+                                                <Link
+                                                    href={venues.show.url(
+                                                        review.venue.slug,
+                                                    )}
+                                                    className="rounded-full border border-border px-4 py-2 text-sm transition hover:bg-muted"
+                                                >
+                                                    View Venue
+                                                </Link>
+                                            ) : null}
                                             <button
                                                 type="button"
                                                 onClick={() =>
                                                     router.patch(
-                                                        `/dashboard/approvals/${venue.slug}/approve`,
+                                                        `/dashboard/admin/reviews/${review.id}/approve`,
                                                     )
                                                 }
                                                 className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
@@ -72,7 +84,7 @@ export default function ApprovalsIndex({ venues }: any) {
                                                 type="button"
                                                 onClick={() =>
                                                     router.patch(
-                                                        `/dashboard/approvals/${venue.slug}/reject`,
+                                                        `/dashboard/admin/reviews/${review.id}/reject`,
                                                     )
                                                 }
                                                 className="rounded-full bg-destructive px-4 py-2 text-sm font-semibold text-white transition hover:bg-destructive/90"
@@ -86,7 +98,7 @@ export default function ApprovalsIndex({ venues }: any) {
                         </tbody>
                     </table>
                 </div>
-                <Pagination resource={venues} />
+                <Pagination resource={reviews} />
             </DashboardPageShell>
         </>
     );

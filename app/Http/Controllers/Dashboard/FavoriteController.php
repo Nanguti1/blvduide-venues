@@ -14,7 +14,7 @@ class FavoriteController extends Controller
         $favorites = $request->user()
             ->favoriteVenues()
             ->with(['category', 'country', 'city', 'locale'])
-            ->paginate(12);
+            ->paginate(20);
 
         return Inertia::render('dashboard/favorites/index', [
             'favorites' => $favorites,
