@@ -316,57 +316,16 @@ class WordpressPropertySeeder extends Seeder
             try {
                 $filename = $this->safeFilename($imageUrl);
                 $collection = $first ? 'venue-cover' : 'venue-gallery';
-                $localImage = $this->getLocalImagePath($imageUrl);
 
-                if ($localImage !== null) {
-                    $venue->addMedia($localImage)
-                        ->usingFileName($filename)
-                        ->toMediaCollection($collection);
-                } elseif ($this->shouldUseLocalImages()) {
-                    $this->command?->warn("Skipping remote download for {$imageUrl} because WP_IMPORT_USE_LOCAL_IMAGES is enabled and local file was not found.");
-                    continue;
-                } else {
-                    $venue->addMediaFromUrl($imageUrl)
-                        ->usingFileName($filename)
-                        ->toMediaCollection($collection);
-                }
+                $venue->addMediaFromUrl($imageUrl)
+                    ->usingFileName($filename)
+                    ->toMediaCollection($collection);
 
                 $first = false;
             } catch (\Throwable $exception) {
                 $this->command?->warn("Image import failed for {$imageUrl}: {$exception->getMessage()}");
             }
         }
-    }
-
-    private function shouldUseLocalImages(): bool
-    {
-        return filter_var(env('WP_IMPORT_USE_LOCAL_IMAGES', false), FILTER_VALIDATE_BOOLEAN);
-    }
-
-    private function getLocalImagePath(string $imageUrl): ?string
-    {
-        if (! $this->shouldUseLocalImages()) {
-            return null;
-        }
-
-        $basePath = rtrim(env('WP_IMPORT_LOCAL_IMAGE_PATH', public_path('uploads')), DIRECTORY_SEPARATOR);
-        $remotePath = parse_url($imageUrl, PHP_URL_PATH) ?: '';
-        $relative = preg_replace('#^.*/wp-content/uploads/#i', '', $remotePath);
-
-        $candidates = [];
-        if ($relative !== '') {
-            $candidates[] = $basePath . DIRECTORY_SEPARATOR . str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $relative);
-        }
-
-        $candidates[] = $basePath . DIRECTORY_SEPARATOR . $this->safeFilename($imageUrl);
-
-        foreach ($candidates as $candidate) {
-            if (file_exists($candidate)) {
-                return $candidate;
-            }
-        }
-
-        return null;
     }
 
     private function safeFilename(string $url): string
