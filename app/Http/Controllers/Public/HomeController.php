@@ -14,12 +14,12 @@ class HomeController extends Controller
         return Inertia::render('home', [
             'featuredVenues' => Venue::published()
                 ->featured()
-                ->with(['category', 'city', 'locale'])
+                ->with(['category', 'city', 'locale', 'media'])
                 ->latest('published_at')
                 ->limit(6)
                 ->get(),
             'latestVenues' => Venue::published()
-                ->with(['category', 'city', 'locale'])
+                ->with(['category', 'city', 'locale', 'media'])
                 ->latest('published_at')
                 ->limit(8)
                 ->get(),

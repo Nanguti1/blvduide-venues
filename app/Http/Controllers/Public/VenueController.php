@@ -33,7 +33,7 @@ class VenueController extends Controller
         ]);
 
         $venues = $search->query($filters)
-            ->with(['category', 'features', 'country', 'county', 'city', 'locale', 'user'])
+            ->with(['category', 'features', 'country', 'county', 'city', 'locale', 'user', 'media'])
             ->paginate(12)
             ->withQueryString();
 
@@ -75,10 +75,10 @@ class VenueController extends Controller
             $filters = array_merge($request->only(['q', 'country', 'county', 'city', 'locale', 'min_price', 'max_price', 'capacity', 'features', 'featured', 'min_rating']), ['category' => $category->slug]);
         
             $venues = $search->query($filters)
-                ->with(['category', 'features', 'country', 'county', 'city', 'locale', 'user'])
+                ->with(['category', 'features', 'country', 'county', 'city', 'locale', 'user', 'media'])
                 ->paginate(12)
                 ->withQueryString();
-        
+
             return Inertia::render('venues/index', [
                 'venues' => $venues,
                 'filters' => $filters,
@@ -94,10 +94,10 @@ class VenueController extends Controller
             $filters = array_merge($request->only(['q', 'category', 'country', 'county', 'city', 'min_price', 'max_price', 'capacity', 'features', 'featured', 'min_rating']), ['locale' => $locale->slug]);
         
             $venues = $search->query($filters)
-                ->with(['category', 'features', 'country', 'county', 'city', 'locale', 'user'])
+                ->with(['category', 'features', 'country', 'county', 'city', 'locale', 'user', 'media'])
                 ->paginate(12)
                 ->withQueryString();
-        
+
             return Inertia::render('venues/index', [
                 'venues' => $venues,
                 'filters' => $filters,
