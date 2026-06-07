@@ -21,7 +21,7 @@ class VenueApprovalController extends Controller
             ])
             ->with(['category', 'user', 'country', 'city'])
             ->latest()
-            ->paginate(15);
+            ->paginate(20);
 
         return Inertia::render('dashboard/approvals/index', [
             'venues' => $venues,

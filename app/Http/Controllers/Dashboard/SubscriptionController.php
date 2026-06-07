@@ -14,7 +14,7 @@ class SubscriptionController extends Controller
 {
     public function index(Request $request)
     {
-        $subscriptions = $request->user()->subscriptions()->with('package')->latest()->get();
+        $subscriptions = $request->user()->subscriptions()->with('package')->latest()->paginate(20);
 
         return Inertia::render('dashboard/subscriptions/index', [
             'subscriptions' => $subscriptions,

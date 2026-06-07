@@ -16,7 +16,7 @@ class ReviewModerationController extends Controller
         $reviews = Review::query()
             ->with(['user', 'venue'])
             ->latest()
-            ->paginate(15);
+            ->paginate(20);
 
         return Inertia::render('dashboard/admin/reviews/index', [
             'reviews' => $reviews,

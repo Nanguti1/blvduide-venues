@@ -16,7 +16,7 @@ class ReviewController extends Controller
             ->reviews()
             ->with('venue')
             ->latest()
-            ->paginate(12);
+            ->paginate(20);
 
         return Inertia::render('dashboard/reviews/index', [
             'reviews' => $reviews,

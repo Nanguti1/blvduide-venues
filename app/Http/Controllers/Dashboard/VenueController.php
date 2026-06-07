@@ -28,7 +28,7 @@ class VenueController extends Controller
         $venues = $query
             ->with(['category', 'country', 'county', 'city', 'locale'])
             ->latest()
-            ->paginate(12);
+            ->paginate(20);
 
         return Inertia::render('dashboard/venues/index', [
             'venues' => $venues,
@@ -123,6 +123,25 @@ class VenueController extends Controller
         $venue->delete();
 
         return redirect()->route('dashboard.venues.index')->with('success', 'Venue deleted successfully.');
+    }
+
+    public function bulkDestroy(Request $request)
+    {
+        $attributes = $request->validate([
+            'venue_ids' => ['required', 'array', 'min:1'],
+            'venue_ids.*' => ['integer', 'exists:venues,id'],
+        ]);
+
+        $venues = Venue::query()
+            ->whereIn('id', $attributes['venue_ids'])
+            ->get();
+
+        $venues->each(function (Venue $venue) {
+            $this->authorize('delete', $venue);
+            $venue->delete();
+        });
+
+        return redirect()->route('dashboard.venues.index')->with('success', $venues->count().' venues deleted successfully.');
     }
 
     public function submitForApproval(Venue $venue)

@@ -1,5 +1,6 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { FormEvent, useState } from 'react';
+import { useState } from 'react';
+import type { FormEvent } from 'react';
 import { Search, Star } from 'lucide-react';
 import InputError from '@/components/input-error';
 import VenueCard from '@/components/venue-card';
@@ -34,9 +35,11 @@ export default function Home({
         if (query) {
             params.q = query;
         }
+
         if (category) {
             params.category = category;
         }
+
         if (capacity) {
             params.capacity = capacity;
         }
@@ -69,7 +72,7 @@ export default function Home({
                 <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-black/20" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30" />
 
-                <div className="relative mx-auto flex min-h-screen max-w-8xl flex-col px-4 pb-10 pt-28 sm:px-6 lg:px-8">
+                <div className="max-w-8xl relative mx-auto flex min-h-screen flex-col px-4 pt-28 pb-10 sm:px-6 lg:px-8">
                     <div className="max-w-2xl">
                         <p className="text-sm tracking-[0.3em] text-white/70 uppercase">
                             BLVD GUIDE Marketplace
@@ -142,16 +145,28 @@ export default function Home({
                                         <option value="" className="text-black">
                                             Any
                                         </option>
-                                        <option value="50" className="text-black">
+                                        <option
+                                            value="50"
+                                            className="text-black"
+                                        >
                                             Up to 50
                                         </option>
-                                        <option value="100" className="text-black">
+                                        <option
+                                            value="100"
+                                            className="text-black"
+                                        >
                                             Up to 100
                                         </option>
-                                        <option value="250" className="text-black">
+                                        <option
+                                            value="250"
+                                            className="text-black"
+                                        >
                                             Up to 250
                                         </option>
-                                        <option value="500" className="text-black">
+                                        <option
+                                            value="500"
+                                            className="text-black"
+                                        >
                                             500+
                                         </option>
                                     </select>
@@ -166,7 +181,7 @@ export default function Home({
                                             setQuery(e.target.value)
                                         }
                                         placeholder="Search venues..."
-                                        className="w-full rounded-xl border-0 bg-white/10 px-4 py-3 text-sm text-white placeholder:text-white/50 outline-none"
+                                        className="w-full rounded-xl border-0 bg-white/10 px-4 py-3 text-sm text-white outline-none placeholder:text-white/50"
                                     />
                                 </label>
                             </div>
@@ -211,7 +226,7 @@ export default function Home({
 
             {/* inquiry section moved closer to CTA */}
 
-            <section className="mx-auto max-w-8xl px-4 py-16 sm:px-6 lg:px-8">
+            <section className="max-w-8xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
                 <div className="mb-8 flex items-end justify-between">
                     <div>
                         <h2 className="text-2xl font-semibold text-foreground">
@@ -243,23 +258,23 @@ export default function Home({
             </section>
 
             <section className="bg-muted/40 py-16">
-                <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
+                <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
                     <h2 className="mb-8 text-2xl font-semibold text-foreground">
                         Popular categories
                     </h2>
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                         {categories.map((categoryItem) => (
                             <Link
                                 key={categoryItem.id}
                                 href={venues.categories.show.url(
                                     categoryItem.slug,
                                 )}
-                                className="rounded-3xl border border-border bg-background p-6 transition hover:-translate-y-1 hover:shadow-lg"
+                                className="rounded-2xl border border-border bg-background px-4 py-3 transition hover:-translate-y-0.5 hover:shadow-md"
                             >
-                                <p className="text-lg font-semibold text-foreground">
+                                <p className="text-base font-semibold text-foreground">
                                     {categoryItem.name}
                                 </p>
-                                <p className="mt-2 text-sm text-muted-foreground">
+                                <p className="mt-1 text-sm text-muted-foreground">
                                     Browse {categoryItem.name.toLowerCase()}
                                 </p>
                             </Link>
@@ -268,7 +283,7 @@ export default function Home({
                 </div>
             </section>
 
-            <section className="mx-auto max-w-8xl px-4 py-16 sm:px-6 lg:px-8">
+            <section className="max-w-8xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
                 <div className="mb-8 flex items-end justify-between">
                     <h2 className="text-2xl font-semibold text-foreground">
                         Latest venues
@@ -287,7 +302,6 @@ export default function Home({
                 </div>
             </section>
 
-
             {/* Insert inquiry form immediately before the CTA */}
             <section className="relative overflow-hidden bg-slate-950/5 text-slate-900 dark:bg-slate-900/70 dark:text-white">
                 <img
@@ -296,41 +310,56 @@ export default function Home({
                     className="absolute inset-0 h-full w-full object-cover opacity-70"
                 />
                 <div className="absolute inset-0 bg-slate-950/60" />
-                <div className="relative mx-auto max-w-8xl px-4 py-16 sm:px-6 lg:px-8">
+                <div className="max-w-8xl relative mx-auto px-4 py-16 sm:px-6 lg:px-8">
                     <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr]">
                         <div className="max-w-xl">
-                            <p className="text-sm uppercase tracking-[0.3em] text-white/70">
+                            <p className="text-sm tracking-[0.3em] text-white/70 uppercase">
                                 Please Send Us Your Inquiry
                             </p>
                             <h2 className="mt-4 text-4xl font-bold text-white sm:text-5xl">
                                 We typically reply within 24 hours.
                             </h2>
                             <p className="mt-4 max-w-xl text-sm leading-7 text-white/80 sm:text-base">
-                                Tell us what you need for your wedding or event and we will help match you with the perfect venue.
+                                Tell us what you need for your wedding or event
+                                and we will help match you with the perfect
+                                venue.
                             </p>
                         </div>
                         <div className="rounded-4xl border border-white/15 bg-white/95 p-8 shadow-2xl backdrop-blur-xl dark:bg-slate-900/95">
-                            <form onSubmit={submitInquiry} className="space-y-4">
+                            <form
+                                onSubmit={submitInquiry}
+                                className="space-y-4"
+                            >
                                 <div className="grid gap-4 sm:grid-cols-2">
                                     <label className="block">
                                         <input
                                             type="text"
                                             value={firstName}
-                                            onChange={(event) => setFirstName(event.target.value)}
+                                            onChange={(event) =>
+                                                setFirstName(event.target.value)
+                                            }
                                             placeholder="First Name"
                                             className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
                                         />
-                                        <InputError message={errors.first_name} className="mt-2" />
+                                        <InputError
+                                            message={errors.first_name}
+                                            className="mt-2"
+                                        />
                                     </label>
                                     <label className="block">
                                         <input
                                             type="text"
                                             value={lastName}
-                                            onChange={(event) => setLastName(event.target.value)}
+                                            onChange={(event) =>
+                                                setLastName(event.target.value)
+                                            }
                                             placeholder="Last Name"
                                             className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
                                         />
-                                        <InputError message={errors.last_name} className="mt-2" />
+                                        <InputError
+                                            message={errors.last_name}
+                                            className="mt-2"
+                                        />
                                     </label>
                                 </div>
                                 <div className="grid gap-4 sm:grid-cols-2">
@@ -338,32 +367,47 @@ export default function Home({
                                         <input
                                             type="email"
                                             value={email}
-                                            onChange={(event) => setEmail(event.target.value)}
+                                            onChange={(event) =>
+                                                setEmail(event.target.value)
+                                            }
                                             placeholder="Email address"
                                             className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
                                         />
-                                        <InputError message={errors.email} className="mt-2" />
+                                        <InputError
+                                            message={errors.email}
+                                            className="mt-2"
+                                        />
                                     </label>
                                     <label className="block">
                                         <input
                                             type="text"
                                             value={zipCode}
-                                            onChange={(event) => setZipCode(event.target.value)}
+                                            onChange={(event) =>
+                                                setZipCode(event.target.value)
+                                            }
                                             placeholder="Zip Code"
                                             className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
                                         />
-                                        <InputError message={errors.zip_code} className="mt-2" />
+                                        <InputError
+                                            message={errors.zip_code}
+                                            className="mt-2"
+                                        />
                                     </label>
                                 </div>
                                 <label className="block">
                                     <textarea
                                         value={message}
-                                        onChange={(event) => setMessage(event.target.value)}
+                                        onChange={(event) =>
+                                            setMessage(event.target.value)
+                                        }
                                         placeholder="Please type your message here..."
                                         rows={5}
                                         className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
                                     />
-                                    <InputError message={errors.message} className="mt-2" />
+                                    <InputError
+                                        message={errors.message}
+                                        className="mt-2"
+                                    />
                                 </label>
                                 <button
                                     type="submit"
@@ -377,7 +421,7 @@ export default function Home({
                 </div>
             </section>
 
-            <section className="mx-auto max-w-8xl px-4 pb-20 pt-20 sm:px-6 lg:px-8">
+            <section className="max-w-8xl mx-auto px-4 pt-20 pb-20 sm:px-6 lg:px-8">
                 <div className="rounded-[2rem] bg-black px-8 py-12 text-center text-white">
                     <h2 className="text-3xl font-semibold">
                         List your venue on BLVD GUIDE

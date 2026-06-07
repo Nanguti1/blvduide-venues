@@ -41,13 +41,37 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => fn () => $this->authUser($request),
             ],
-            'navCategories' => fn () => \App\Models\VenueCategory::orderBy('name')->get(['id', 'name', 'slug', 'icon']),
+            'navCategories' => fn () => $this->navCategories(),
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),
                 'error' => fn () => $request->session()->get('error'),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
+    }
+
+    protected function navCategories(): \Illuminate\Support\Collection
+    {
+        $labels = [
+            'wedding-venues' => 'Wedding Venues',
+            'gardens' => 'Gardens',
+            'meeting-rooms' => 'Board rooms | Meeting rooms',
+            'coworking-spaces' => 'Co working',
+            'conference-halls' => 'Conference Halls',
+            'serviced-offices' => 'Serviced Offices',
+            'studio-venues' => 'Studio Venues',
+        ];
+
+        return \App\Models\VenueCategory::query()
+            ->whereIn('slug', array_keys($labels))
+            ->get(['id', 'name', 'slug', 'icon'])
+            ->sortBy(fn (\App\Models\VenueCategory $category) => array_search($category->slug, array_keys($labels), true))
+            ->values()
+            ->map(function (\App\Models\VenueCategory $category) use ($labels) {
+                $category->name = $labels[$category->slug] ?? $category->name;
+
+                return $category;
+            });
     }
 
     protected function authUser(Request $request): ?array
