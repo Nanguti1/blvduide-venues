@@ -26,48 +26,58 @@ export default function DashboardPackagesIndex({ packages }: any) {
                     ) : null
                 }
             >
-                <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-                    {packages.map((packageItem: any) => (
-                        <div
-                            key={packageItem.id}
-                            className="rounded-3xl border border-border bg-card p-6 shadow-sm"
-                        >
-                            <h2 className="text-xl font-semibold text-foreground">
-                                {packageItem.name}
-                            </h2>
-                            <p className="mt-2 text-sm text-muted-foreground">
-                                {formatPrice(packageItem.price)}
-                            </p>
-                            <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
-                                <li>{packageItem.duration_days} days</li>
-                                <li>{packageItem.max_listings} listings</li>
-                                <li>
-                                    {packageItem.max_images_per_listing} images
-                                    per listing
-                                </li>
-                            </ul>
-                            <div className="mt-5 flex flex-wrap gap-2">
-                                <Link
-                                    href={dashboardPackages.show.url(
-                                        packageItem.id,
-                                    )}
-                                    className="rounded-full border border-border px-4 py-2 text-sm transition hover:bg-muted"
-                                >
-                                    View
-                                </Link>
-                                {canManage ? (
-                                    <Link
-                                        href={dashboardPackages.edit.url(
-                                            packageItem.id,
-                                        )}
-                                        className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
-                                    >
-                                        Edit
-                                    </Link>
-                                ) : null}
-                            </div>
-                        </div>
-                    ))}
+                <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
+                    <table className="min-w-full divide-y divide-border text-left text-sm">
+                        <thead className="bg-slate-100 text-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                            <tr>
+                                <th className="px-6 py-4 font-semibold">Package</th>
+                                <th className="px-6 py-4 font-semibold">Price</th>
+                                <th className="px-6 py-4 font-semibold">Duration</th>
+                                <th className="px-6 py-4 font-semibold">Listings</th>
+                                <th className="px-6 py-4 font-semibold">Images</th>
+                                <th className="px-6 py-4 font-semibold">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-border bg-white dark:bg-slate-950">
+                            {packages.map((packageItem: any) => (
+                                <tr key={packageItem.id} className="hover:bg-slate-50 dark:hover:bg-slate-900">
+                                    <td className="px-6 py-4 align-top">
+                                        <p className="font-semibold text-slate-900 dark:text-slate-100">{packageItem.name}</p>
+                                    </td>
+                                    <td className="px-6 py-4 align-top text-slate-600 dark:text-slate-300">
+                                        {formatPrice(packageItem.price)}
+                                    </td>
+                                    <td className="px-6 py-4 align-top text-slate-600 dark:text-slate-300">
+                                        {packageItem.duration_days} days
+                                    </td>
+                                    <td className="px-6 py-4 align-top text-slate-600 dark:text-slate-300">
+                                        {packageItem.max_listings}
+                                    </td>
+                                    <td className="px-6 py-4 align-top text-slate-600 dark:text-slate-300">
+                                        {packageItem.max_images_per_listing}
+                                    </td>
+                                    <td className="px-6 py-4 align-top text-right">
+                                        <div className="flex flex-wrap justify-end gap-2">
+                                            <Link
+                                                href={dashboardPackages.show.url(packageItem.id)}
+                                                className="rounded-full border border-border px-4 py-2 text-sm transition hover:bg-muted"
+                                            >
+                                                View
+                                            </Link>
+                                            {canManage ? (
+                                                <Link
+                                                    href={dashboardPackages.edit.url(packageItem.id)}
+                                                    className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
+                                                >
+                                                    Edit
+                                                </Link>
+                                            ) : null}
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             </DashboardPageShell>
         </>
