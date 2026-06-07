@@ -128,8 +128,8 @@ class Venue extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('venue-gallery')->useDisk('public')->singleFile(false);
-        $this->addMediaCollection('venue-cover')->useDisk('public')->singleFile();
-        $this->addMediaCollection('venue-documents')->useDisk('public');
+        $this->addMediaCollection('venue-gallery')->useDisk('public_uploads')->singleFile(false);
+        $this->addMediaCollection('venue-cover')->useDisk('public_uploads')->singleFile();
+        $this->addMediaCollection('venue-documents')->useDisk('public_uploads');
     }
 }

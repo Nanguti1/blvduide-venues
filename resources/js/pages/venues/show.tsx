@@ -5,8 +5,12 @@ import { formatPrice } from '@/lib/money';
 import venues from '@/routes/venues';
 
 export default function VenueShow() {
-    const { venue, related, isFavorited, approvedReviews, auth } =
+    const { venue, related, isFavorited, approvedReviews, pendingReviews, auth } =
         usePage().props as any;
+
+    const allReviews = [...(approvedReviews ?? []), ...(pendingReviews ?? [])];
+    const coverImage = venue.media?.find((m: any) => m.collection_name === 'venue-cover');
+    const galleryImages = venue.media?.filter((m: any) => m.collection_name === 'venue-gallery') ?? [];
 
     const reviewForm = useForm({
         rating: 5,
@@ -26,6 +30,59 @@ export default function VenueShow() {
                 <meta head-key="og:type" property="og:type" content="website" />
             </Head>
             <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+                {/* Media Gallery Section - Product Page Style */}
+                <section className="mb-12 grid gap-6 lg:grid-cols-[2fr_1fr]">
+                    {/* Main Cover Image */}
+                    <div className="overflow-hidden rounded-3xl bg-slate-200 dark:bg-slate-700">
+                        {coverImage ? (
+                            <img
+                                src={coverImage.original_url}
+                                alt={venue.title}
+                                className="h-96 w-full object-cover"
+                            />
+                        ) : (
+                            <div className="flex h-96 items-center justify-center bg-slate-300 text-slate-500">
+                                No cover image
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Gallery Thumbnails */}
+                    <div className="space-y-3">
+                        {galleryImages.length > 0 ? (
+                            galleryImages.slice(0, 4).map((image: any, idx: number) => (
+                                <div key={image.id} className="overflow-hidden rounded-2xl">
+                                    <img
+                                        src={image.original_url}
+                                        alt={`Gallery ${idx + 1}`}
+                                        className="aspect-square w-full object-cover"
+                                    />
+                                </div>
+                            ))
+                        ) : (
+                            <p className="text-sm text-slate-500">No gallery images</p>
+                        )}
+                    </div>
+                </section>
+
+                {/* Full Gallery Preview (if more than 4 images) */}
+                {galleryImages.length > 4 && (
+                    <section className="mb-12">
+                        <h3 className="mb-4 text-lg font-semibold">Gallery</h3>
+                        <div className="grid gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+                            {galleryImages.map((image: any, idx: number) => (
+                                <div key={image.id} className="overflow-hidden rounded-2xl">
+                                    <img
+                                        src={image.original_url}
+                                        alt={`Gallery ${idx + 1}`}
+                                        className="aspect-square w-full object-cover"
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+                )}
+
                 <section className="grid gap-8 lg:grid-cols-[1.5fr_0.9fr]">
                     <div className="space-y-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
                         <div className="space-y-3">
@@ -118,27 +175,40 @@ export default function VenueShow() {
 
                 <section className="mt-12 grid gap-8 lg:grid-cols-2">
                     <div>
-                        <h2 className="mb-4 text-2xl font-semibold">Reviews</h2>
+                        <h2 className="mb-4 text-2xl font-semibold">Reviews ({allReviews?.length ?? 0})</h2>
                         <div className="space-y-4">
-                            {approvedReviews?.map((review: any) => (
-                                <article
-                                    key={review.id}
-                                    className="rounded-2xl border border-slate-200 p-4 dark:border-slate-700"
-                                >
-                                    <div className="flex items-center gap-2">
-                                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                                        <span className="font-medium">
-                                            {review.rating}/5
-                                        </span>
-                                        <span className="text-sm text-slate-500">
-                                            {review.user?.name}
-                                        </span>
-                                    </div>
-                                    <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-                                        {review.comment}
-                                    </p>
-                                </article>
-                            ))}
+                            {allReviews && allReviews.length > 0 ? (
+                                allReviews.map((review: any) => {
+                                    const isUserReview = auth.user?.id === review.user_id;
+                                    const isPending = review.status === 'pending' && isUserReview;
+                                    return (
+                                        <article
+                                            key={review.id}
+                                            className="rounded-2xl border border-slate-200 p-4 dark:border-slate-700"
+                                        >
+                                            <div className="flex items-center gap-2">
+                                                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                                                <span className="font-medium">
+                                                    {review.rating}/5
+                                                </span>
+                                                <span className="text-sm text-slate-500">
+                                                    {review.user?.name}
+                                                </span>
+                                                {isPending && (
+                                                    <span className="ml-auto inline-block rounded-full bg-amber-100 px-2 py-1 text-xs font-medium text-amber-700">
+                                                        Pending Review
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+                                                {review.comment}
+                                            </p>
+                                        </article>
+                                    );
+                                })
+                            ) : (
+                                <p className="text-slate-500">No reviews yet. Be the first to review!</p>
+                            )}
                         </div>
                     </div>
                     {auth.user && (

@@ -56,9 +56,15 @@ class VenueController extends Controller
         $attributes = $request->validated();
         $attributes['user_id'] = $user->id;
         $attributes['slug'] = $attributes['slug'] ?? Str::slug($attributes['title']);
-        $attributes['approval_status'] = $request->boolean('submit_for_approval')
-            ? VenueApprovalStatus::Pending->value
-            : VenueApprovalStatus::Draft->value;
+        
+        if ($request->boolean('publish_directly') && $user->hasRole('Super Admin')) {
+            $attributes['approval_status'] = VenueApprovalStatus::Published->value;
+            $attributes['published_at'] = now();
+        } else {
+            $attributes['approval_status'] = $request->boolean('submit_for_approval')
+                ? VenueApprovalStatus::Pending->value
+                : VenueApprovalStatus::Draft->value;
+        }
 
         $venue = Venue::create($attributes);
         $venue->features()->sync($attributes['features'] ?? []);
@@ -85,6 +91,11 @@ class VenueController extends Controller
 
         $attributes = $request->validated();
         $attributes['slug'] = $attributes['slug'] ?? Str::slug($attributes['title']);
+
+        if ($request->boolean('publish_directly') && $request->user()->hasRole('Super Admin')) {
+            $attributes['approval_status'] = VenueApprovalStatus::Published->value;
+            $attributes['published_at'] = now();
+        }
 
         $venue->update($attributes);
         $venue->features()->sync($attributes['features'] ?? []);

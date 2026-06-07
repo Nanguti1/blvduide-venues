@@ -46,6 +46,7 @@ class UpdateVenueRequest extends FormRequest
             'gallery.*' => ['image', 'max:5120'],
             'cover' => ['nullable', 'image', 'max:5120'],
             'submit_for_approval' => ['sometimes', 'boolean'],
+            'publish_directly' => ['sometimes', 'boolean'],
         ];
     }
 }

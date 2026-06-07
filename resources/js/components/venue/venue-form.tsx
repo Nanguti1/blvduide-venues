@@ -1,6 +1,7 @@
-import { useForm } from '@inertiajs/react';
-import { FormEvent, useMemo } from 'react';
+import { useForm, usePage } from '@inertiajs/react';
+import { FormEvent, useMemo, useState } from 'react';
 import dashboardVenues from '@/routes/dashboard/venues';
+import type { Auth } from '@/types/auth';
 
 type LocationNode = {
     id: number;
@@ -34,7 +35,11 @@ export default function VenueForm({
     countries,
     submitLabel = 'Save Venue',
 }: VenueFormProps) {
+    const { auth } = usePage().props as { auth: Auth };
+    const isSuperAdmin = auth.user?.roles?.some((r: any) => r.name === 'Super Admin');
     const isEditing = Boolean(venue?.id);
+    const [coverPreview, setCoverPreview] = useState<string | null>(null);
+    const [galleryPreviews, setGalleryPreviews] = useState<string[]>([]);
 
     const { data, setData, post, put, processing, errors, transform } = useForm({
         title: venue?.title ?? '',
@@ -290,22 +295,59 @@ export default function VenueForm({
                     <input
                         type="file"
                         accept="image/*"
-                        onChange={(e) =>
-                            setData('cover', e.target.files?.[0] ?? null)
-                        }
+                        onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            setData('cover', file ?? null);
+                            if (file) {
+                                const reader = new FileReader();
+                                reader.onload = () => setCoverPreview(reader.result as string);
+                                reader.readAsDataURL(file);
+                            }
+                        }}
                         className={inputClass}
                     />
+                    {coverPreview && (
+                        <div className="mt-3">
+                            <img src={coverPreview} alt="Cover preview" className="max-h-48 w-full rounded-2xl object-cover" />
+                        </div>
+                    )}
                 </Field>
                 <Field label="Gallery images" error={errors.gallery}>
                     <input
                         type="file"
                         accept="image/*"
                         multiple
-                        onChange={(e) =>
-                            setData('gallery', Array.from(e.target.files ?? []))
-                        }
+                        onChange={(e) => {
+                            const files = Array.from(e.target.files ?? []);
+                            setData('gallery', files);
+                            const previews: string[] = [];
+                            let loadedCount = 0;
+                            files.forEach((file) => {
+                                const reader = new FileReader();
+                                reader.onload = () => {
+                                    previews.push(reader.result as string);
+                                    loadedCount++;
+                                    if (loadedCount === files.length) {
+                                        setGalleryPreviews(previews);
+                                    }
+                                };
+                                reader.readAsDataURL(file);
+                            });
+                        }}
                         className={inputClass}
                     />
+                    {galleryPreviews.length > 0 && (
+                        <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                            {galleryPreviews.map((preview, idx) => (
+                                <img
+                                    key={idx}
+                                    src={preview}
+                                    alt={`Gallery preview ${idx + 1}`}
+                                    className="aspect-square rounded-2xl object-cover"
+                                />
+                            ))}
+                        </div>
+                    )}
                 </Field>
             </div>
 
@@ -325,6 +367,28 @@ export default function VenueForm({
                 >
                     Save &amp; submit for approval
                 </button>
+                {isSuperAdmin && (
+                    <button
+                        type="button"
+                        disabled={processing}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            const options = { forceFormData: true as const };
+                            transform((current) => ({
+                                ...current,
+                                publish_directly: true,
+                            }));
+                            if (isEditing) {
+                                put(dashboardVenues.update.url(venue!.slug), options);
+                            } else {
+                                post(dashboardVenues.store.url(), options);
+                            }
+                        }}
+                        className="rounded-xl bg-green-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-green-700 disabled:opacity-50"
+                    >
+                        Publish Now
+                    </button>
+                )}
             </div>
         </form>
     );

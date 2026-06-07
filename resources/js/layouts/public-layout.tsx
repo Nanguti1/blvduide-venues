@@ -57,9 +57,9 @@ export default function PublicLayout({
             )}
             <main className="flex-1">{children}</main>
             <footer className="border-t border-slate-200 bg-slate-50 text-slate-900 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100">
-                <div className="mx-auto max-w-8xl px-4 py-16 sm:px-6 lg:px-8">
+                <div className="mx-auto max-w-8xl px-4 py-20 sm:px-6 lg:px-8">
                     <div className="grid gap-8 lg:grid-cols-[1.5fr_repeat(3,minmax(0,1fr))]">
-                        <div className="rounded-[2rem] bg-gradient-to-br from-sky-600 to-cyan-500 p-8 text-white shadow-xl shadow-slate-900/10">
+                        <div className="rounded-4xl bg-linear-to-br from-sky-600 to-cyan-500 p-8 text-white shadow-xl shadow-slate-900/10">
                             <h2 className="text-2xl font-semibold">BLVD GUIDE</h2>
                             <p className="mt-4 text-sm leading-7 text-white/90">
                                 Venue marketplace connecting hosts with clients seeking memorable event spaces across Kenya. Manage subscriptions, showcase your venue, and reach trusted customers.
@@ -74,22 +74,22 @@ export default function PublicLayout({
                             <h3 className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-900 dark:text-slate-100">
                                 Marketplace
                             </h3>
-                            <ul className="mt-4 space-y-3 text-sm text-slate-600 dark:text-slate-400">
-                                <li>About</li>
-                                <li>Venues</li>
-                                <li>Categories</li>
-                                <li>Blog</li>
+                            <ul className="mt-4 space-y-3 text-sm">
+                                <li><a href="/about" className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition">About</a></li>
+                                <li><a href="/venues" className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition">Venues</a></li>
+                                <li><a href="/venues" className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition">Categories</a></li>
+                                <li><a href="#" className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition">Blog</a></li>
                             </ul>
                         </div>
                         <div>
                             <h3 className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-900 dark:text-slate-100">
                                 Account
                             </h3>
-                            <ul className="mt-4 space-y-3 text-sm text-slate-600 dark:text-slate-400">
-                                <li>Help & Support</li>
-                                <li>Subscriptions</li>
-                                <li>My Listings</li>
-                                <li>Wishlist</li>
+                            <ul className="mt-4 space-y-3 text-sm">
+                                <li><a href="/contact" className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition">Help & Support</a></li>
+                                <li><a href="#" className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition">Subscriptions</a></li>
+                                <li><a href="#" className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition">My Listings</a></li>
+                                <li><a href="#" className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition">Wishlist</a></li>
                             </ul>
                         </div>
                         <div>

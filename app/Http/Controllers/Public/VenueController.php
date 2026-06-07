@@ -51,10 +51,14 @@ class VenueController extends Controller
         abort_if($venue->approval_status !== VenueApprovalStatus::Published, 404);
 
         $user = $request->user();
+        
+        // Load media explicitly
+        $venue->load('media');
 
         return Inertia::render('venues/show', [
             'venue' => $venue->load(['category', 'features', 'country', 'county', 'city', 'locale', 'user']),
             'approvedReviews' => $venue->reviews()->approved()->with('user')->latest()->get(),
+            'pendingReviews' => $user ? $user->reviews()->where('venue_id', $venue->id)->pending()->with('user')->latest()->get() : [],
             'isFavorited' => $user
                 ? $user->favoriteVenues()->where('venue_id', $venue->id)->exists()
                 : false,
