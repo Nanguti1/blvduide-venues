@@ -66,6 +66,7 @@ export default function VenueForm({
         capacity: venue?.capacity ?? '',
         meta_title: venue?.meta_title ?? '',
         meta_description: venue?.meta_description ?? '',
+        featured: venue?.featured ?? false,
         features: (venue?.features ?? []).map((f: any) => f.id) as number[],
         cover: null as File | null,
         gallery: [] as File[],
@@ -172,6 +173,24 @@ export default function VenueForm({
                     />
                 </Field>
             </div>
+
+            {isSuperAdmin && (
+                <div className="grid gap-4 md:grid-cols-2">
+                    <Field label="Featured listing" error={errors.featured}>
+                        <label className="inline-flex items-center gap-3">
+                            <input
+                                type="checkbox"
+                                checked={data.featured}
+                                onChange={(e) => setData('featured', e.target.checked)}
+                                className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary"
+                            />
+                            <span className="text-sm text-slate-700 dark:text-slate-200">
+                                Mark this venue as featured
+                            </span>
+                        </label>
+                    </Field>
+                </div>
+            )}
 
             <div className="grid gap-4 md:grid-cols-2">
                 <Field label="Country" error={errors.country_id || errors.country_name}>
