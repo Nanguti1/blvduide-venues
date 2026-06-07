@@ -1,6 +1,7 @@
 import { Head, Link } from '@inertiajs/react';
 import DashboardPageShell from '@/components/dashboard-page-shell';
 import dashboardVenues from '@/routes/dashboard/venues';
+import { formatPrice } from '@/lib/money';
 
 export default function DashboardVenuesIndex({ venues }: { venues: any }) {
     return (
@@ -44,7 +45,7 @@ export default function DashboardVenuesIndex({ venues }: { venues: any }) {
                                         {venue.city?.name ?? venue.locale?.name ?? '–'}, {venue.country?.name ?? '–'}
                                     </td>
                                     <td className="px-6 py-4 align-top text-slate-600 dark:text-slate-300">
-                                        {venue.price ? `₦${venue.price}` : 'N/A'}
+                                        {venue.price ? formatPrice(venue.price) : 'N/A'}
                                     </td>
                                     <td className="px-6 py-4 align-top text-slate-600 dark:text-slate-300">
                                         {venue.approval_status}
