@@ -48,9 +48,13 @@ export default function VenueForm({
         short_description: venue?.short_description ?? '',
         venue_category_id: venue?.venue_category_id ?? categories[0]?.id ?? '',
         country_id: venue?.country_id ?? countries[0]?.id ?? '',
+        country_name: '',
         county_id: venue?.county_id ?? '',
+        county_name: '',
         city_id: venue?.city_id ?? '',
+        city_name: '',
         locale_id: venue?.locale_id ?? '',
+        locale_name: '',
         operational_status: venue?.operational_status ?? 'available',
         price: venue?.price ?? '',
         address: venue?.address ?? '',
@@ -170,16 +174,20 @@ export default function VenueForm({
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
-                <Field label="Country" error={errors.country_id}>
+                <Field label="Country" error={errors.country_id || errors.country_name}>
                     <select
                         value={data.country_id}
                         onChange={(e) => {
                             setData((prev) => ({
                                 ...prev,
                                 country_id: Number(e.target.value),
+                                country_name: '',
                                 county_id: '',
+                                county_name: '',
                                 city_id: '',
+                                city_name: '',
                                 locale_id: '',
+                                locale_name: '',
                             }));
                         }}
                         className={inputClass}
@@ -190,16 +198,37 @@ export default function VenueForm({
                             </option>
                         ))}
                     </select>
+                    <input
+                        value={data.country_name}
+                        onChange={(e) =>
+                            setData((prev) => ({
+                                ...prev,
+                                country_name: e.target.value,
+                                country_id: '',
+                                county_id: '',
+                                county_name: '',
+                                city_id: '',
+                                city_name: '',
+                                locale_id: '',
+                                locale_name: '',
+                            }))
+                        }
+                        placeholder="Or type a new country"
+                        className="mt-3 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-slate-400 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                    />
                 </Field>
-                <Field label="County" error={errors.county_id}>
+                <Field label="County" error={errors.county_id || errors.county_name}>
                     <select
                         value={data.county_id}
                         onChange={(e) => {
                             setData((prev) => ({
                                 ...prev,
                                 county_id: Number(e.target.value),
+                                county_name: '',
                                 city_id: '',
+                                city_name: '',
                                 locale_id: '',
+                                locale_name: '',
                             }));
                         }}
                         className={inputClass}
@@ -211,15 +240,33 @@ export default function VenueForm({
                             </option>
                         ))}
                     </select>
+                    <input
+                        value={data.county_name}
+                        onChange={(e) =>
+                            setData((prev) => ({
+                                ...prev,
+                                county_name: e.target.value,
+                                county_id: '',
+                                city_id: '',
+                                city_name: '',
+                                locale_id: '',
+                                locale_name: '',
+                            }))
+                        }
+                        placeholder="Or type a new county"
+                        className="mt-3 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-slate-400 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                    />
                 </Field>
-                <Field label="City" error={errors.city_id}>
+                <Field label="City" error={errors.city_id || errors.city_name}>
                     <select
                         value={data.city_id}
                         onChange={(e) => {
                             setData((prev) => ({
                                 ...prev,
                                 city_id: Number(e.target.value),
+                                city_name: '',
                                 locale_id: '',
+                                locale_name: '',
                             }));
                         }}
                         className={inputClass}
@@ -231,12 +278,30 @@ export default function VenueForm({
                             </option>
                         ))}
                     </select>
+                    <input
+                        value={data.city_name}
+                        onChange={(e) =>
+                            setData((prev) => ({
+                                ...prev,
+                                city_name: e.target.value,
+                                city_id: '',
+                                locale_id: '',
+                                locale_name: '',
+                            }))
+                        }
+                        placeholder="Or type a new city"
+                        className="mt-3 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-slate-400 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                    />
                 </Field>
-                <Field label="Area / Locale" error={errors.locale_id}>
+                <Field label="Area / Locale" error={errors.locale_id || errors.locale_name}>
                     <select
                         value={data.locale_id}
                         onChange={(e) =>
-                            setData('locale_id', Number(e.target.value) || '')
+                            setData((prev) => ({
+                                ...prev,
+                                locale_id: Number(e.target.value) || '',
+                                locale_name: '',
+                            }))
                         }
                         className={inputClass}
                     >
@@ -247,6 +312,18 @@ export default function VenueForm({
                             </option>
                         ))}
                     </select>
+                    <input
+                        value={data.locale_name}
+                        onChange={(e) =>
+                            setData((prev) => ({
+                                ...prev,
+                                locale_name: e.target.value,
+                                locale_id: '',
+                            }))
+                        }
+                        placeholder="Or type a new area"
+                        className="mt-3 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-slate-400 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                    />
                 </Field>
             </div>
 

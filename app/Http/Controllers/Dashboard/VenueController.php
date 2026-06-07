@@ -6,7 +6,10 @@ use App\Enums\VenueApprovalStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreVenueRequest;
 use App\Http\Requests\UpdateVenueRequest;
+use App\Models\City;
 use App\Models\Country;
+use App\Models\County;
+use App\Models\Locale;
 use App\Models\Venue;
 use App\Models\VenueCategory;
 use App\Models\VenueFeature;
@@ -18,8 +21,11 @@ class VenueController extends Controller
 {
     public function index(Request $request)
     {
-        $venues = $request->user()
-            ->venues()
+        $query = $request->user()->hasRole('Super Admin')
+            ? Venue::query()
+            : $request->user()->venues();
+
+        $venues = $query
             ->with(['category', 'country', 'county', 'city', 'locale'])
             ->latest()
             ->paginate(12);
@@ -54,6 +60,9 @@ class VenueController extends Controller
         }
 
         $attributes = $request->validated();
+        $attributes = array_merge($attributes, $this->resolveLocationIds($attributes));
+        unset($attributes['country_name'], $attributes['county_name'], $attributes['city_name'], $attributes['locale_name']);
+
         $attributes['user_id'] = $user->id;
         $attributes['slug'] = $attributes['slug'] ?? Str::slug($attributes['title']);
         
@@ -90,6 +99,9 @@ class VenueController extends Controller
         $this->authorize('update', $venue);
 
         $attributes = $request->validated();
+        $attributes = array_merge($attributes, $this->resolveLocationIds($attributes));
+        unset($attributes['country_name'], $attributes['county_name'], $attributes['city_name'], $attributes['locale_name']);
+
         $attributes['slug'] = $attributes['slug'] ?? Str::slug($attributes['title']);
 
         if ($request->boolean('publish_directly') && $request->user()->hasRole('Super Admin')) {
@@ -123,6 +135,61 @@ class VenueController extends Controller
         ]);
 
         return redirect()->route('dashboard.venues.index')->with('success', 'Venue submitted for approval.');
+    }
+
+    protected function resolveLocationIds(array $data): array
+    {
+        $countryId = $data['country_id'] ?? null;
+        if (filled($data['country_name'])) {
+            $country = Country::firstOrCreate(
+                ['slug' => Str::slug($data['country_name'])],
+                ['name' => trim($data['country_name'])]
+            );
+            $countryId = $country->id;
+        }
+
+        $countyId = $data['county_id'] ?? null;
+        if (filled($data['county_name'])) {
+            $county = County::firstOrCreate(
+                [
+                    'country_id' => $countryId,
+                    'slug' => Str::slug($data['county_name']),
+                ],
+                ['name' => trim($data['county_name'])],
+            );
+            $countyId = $county->id;
+        }
+
+        $cityId = $data['city_id'] ?? null;
+        if (filled($data['city_name'])) {
+            $city = City::firstOrCreate(
+                [
+                    'county_id' => $countyId,
+                    'slug' => Str::slug($data['city_name']),
+                ],
+                ['name' => trim($data['city_name'])],
+            );
+            $cityId = $city->id;
+        }
+
+        $localeId = $data['locale_id'] ?? null;
+        if (filled($data['locale_name'])) {
+            $locale = Locale::firstOrCreate(
+                [
+                    'city_id' => $cityId,
+                    'slug' => Str::slug($data['locale_name']),
+                ],
+                ['name' => trim($data['locale_name'])],
+            );
+            $localeId = $locale->id;
+        }
+
+        return [
+            'country_id' => $countryId,
+            'county_id' => $countyId,
+            'city_id' => $cityId,
+            'locale_id' => $localeId,
+        ];
     }
 
     protected function syncMedia(Venue $venue, Request $request): void
