@@ -1,5 +1,6 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { FormEvent, useState } from 'react';
+import type { FormEvent } from 'react';
+import { useState } from 'react';
 import VenueCard from '@/components/venue-card';
 import venues from '@/routes/venues';
 
@@ -22,6 +23,11 @@ export default function VenueFilters({
     category,
     locale,
 }: Props) {
+    const [displayedVenues, setDisplayedVenues] = useState<any[]>(
+        venueList.data ?? [],
+    );
+    const [loadingMore, setLoadingMore] = useState(false);
+    const [pagination, setPagination] = useState(venueList);
     const [localFilters, setLocalFilters] = useState({
         q: (filters.q as string) ?? '',
         category: (filters.category as string) ?? category?.slug ?? '',
@@ -33,8 +39,7 @@ export default function VenueFilters({
         max_price: (filters.max_price as string) ?? '',
         capacity: (filters.capacity as string) ?? '',
         featured:
-            filters.featured === '1' ||
-            String(filters.featured) === 'true',
+            filters.featured === '1' || String(filters.featured) === 'true',
         min_rating: (filters.min_rating as string) ?? '',
         features: Array.isArray(filters.features)
             ? filters.features.map(String)
@@ -50,29 +55,61 @@ export default function VenueFilters({
 
         Object.entries(localFilters).forEach(([key, value]) => {
             if (key === 'featured') {
-                if (value) query.featured = '1';
+                if (value) {
+                    query.featured = '1';
+                }
+
                 return;
             }
+
             if (key === 'features' && Array.isArray(value) && value.length) {
                 query.features = value;
+
                 return;
             }
+
             if (value !== '' && value !== false && value !== null) {
                 query[key] = String(value);
             }
         });
 
-        router.get(venues.index.url(), query, { preserveState: true });
+        router.get(venues.index.url(), query, { preserveScroll: true });
+    }
+
+    async function loadMore() {
+        if (!pagination.next_page_url) {
+            return;
+        }
+
+        setLoadingMore(true);
+
+        try {
+            const response = await fetch(pagination.next_page_url, {
+                headers: { Accept: 'application/json' },
+            });
+            const payload = await response.json();
+
+            setPagination(payload.venues);
+            setDisplayedVenues((current) => {
+                const next = [...current];
+
+                (payload.venues?.data ?? []).forEach((venue: any) => {
+                    if (!next.some((item) => item.id === venue.id)) {
+                        next.push(venue);
+                    }
+                });
+
+                return next;
+            });
+        } finally {
+            setLoadingMore(false);
+        }
     }
 
     return (
         <>
-            <Head
-                title={
-                    category?.name ?? locale?.name ?? 'Discover Venues'
-                }
-            />
-            <div className="mx-auto max-w-8xl px-4 py-10 sm:px-6 lg:px-8">
+            <Head title={category?.name ?? locale?.name ?? 'Discover Venues'} />
+            <div className="max-w-8xl mx-auto px-4 py-10 sm:px-6 lg:px-8">
                 <header className="mb-8">
                     <p className="text-sm tracking-[0.24em] text-slate-500 uppercase">
                         Venue marketplace
@@ -92,7 +129,10 @@ export default function VenueFilters({
                         placeholder="Search venues..."
                         value={localFilters.q}
                         onChange={(e) =>
-                            setLocalFilters({ ...localFilters, q: e.target.value })
+                            setLocalFilters({
+                                ...localFilters,
+                                q: e.target.value,
+                            })
                         }
                         className="rounded-2xl border border-slate-200 px-4 py-3 text-sm md:col-span-2 dark:border-slate-700 dark:bg-slate-950"
                     />
@@ -198,6 +238,7 @@ export default function VenueFilters({
                         const active = localFilters.features.includes(
                             String(feature.id),
                         );
+
                         return (
                             <button
                                 key={feature.id}
@@ -228,12 +269,26 @@ export default function VenueFilters({
                     })}
                 </div>
 
-                {venueList.data?.length ? (
-                    <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-                        {venueList.data.map((venue: any) => (
-                            <VenueCard key={venue.id} venue={venue} />
-                        ))}
-                    </div>
+                {displayedVenues.length ? (
+                    <>
+                        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+                            {displayedVenues.map((venue: any) => (
+                                <VenueCard key={venue.id} venue={venue} />
+                            ))}
+                        </div>
+                        {pagination.next_page_url ? (
+                            <div className="mt-10 flex justify-center">
+                                <button
+                                    type="button"
+                                    onClick={loadMore}
+                                    disabled={loadingMore}
+                                    className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
+                                >
+                                    {loadingMore ? 'Loading…' : 'Load More'}
+                                </button>
+                            </div>
+                        ) : null}
+                    </>
                 ) : (
                     <div className="rounded-3xl border border-dashed border-slate-300 p-12 text-center text-slate-500 dark:border-slate-700">
                         No venues match your filters.{' '}

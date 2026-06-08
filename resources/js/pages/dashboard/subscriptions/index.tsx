@@ -1,10 +1,14 @@
 import { Head, Link } from '@inertiajs/react';
+import FilterBar from '@/components/dashboard/filter-bar';
 import DashboardPageShell from '@/components/dashboard-page-shell';
 import Pagination from '@/components/pagination';
 import dashboardPackages from '@/routes/dashboard/packages';
 import dashboardSubscriptions from '@/routes/dashboard/subscriptions';
 
-export default function DashboardSubscriptionsIndex({ subscriptions }: any) {
+export default function DashboardSubscriptionsIndex({
+    subscriptions,
+    filters = {},
+}: any) {
     return (
         <>
             <Head title="Subscriptions" />
@@ -22,6 +26,40 @@ export default function DashboardSubscriptionsIndex({ subscriptions }: any) {
                     </>
                 }
             >
+                <FilterBar
+                    filters={filters}
+                    fields={[
+                        {
+                            label: 'Search',
+                            name: 'q',
+                            placeholder: 'Package or transaction',
+                        },
+                        {
+                            label: 'Subscription status',
+                            name: 'status',
+                            type: 'select',
+                            options: [
+                                { label: 'Active', value: 'active' },
+                                { label: 'Expired', value: 'expired' },
+                                { label: 'Cancelled', value: 'cancelled' },
+                                { label: 'Suspended', value: 'suspended' },
+                            ],
+                        },
+                        {
+                            label: 'Payment status',
+                            name: 'payment_status',
+                            type: 'select',
+                            options: [
+                                { label: 'Pending', value: 'pending' },
+                                { label: 'Completed', value: 'completed' },
+                                { label: 'Failed', value: 'failed' },
+                                { label: 'Refunded', value: 'refunded' },
+                            ],
+                        },
+                        { label: 'From', name: 'date_from', type: 'date' },
+                        { label: 'To', name: 'date_to', type: 'date' },
+                    ]}
+                />
                 <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
                     <table className="min-w-full divide-y divide-border text-left text-sm">
                         <thead className="bg-slate-100 text-slate-700 dark:bg-slate-900 dark:text-slate-200">

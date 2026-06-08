@@ -1,5 +1,6 @@
 import { useForm, usePage } from '@inertiajs/react';
-import { FormEvent, useMemo, useState } from 'react';
+import type { FormEvent } from 'react';
+import { useMemo, useState } from 'react';
 import dashboardVenues from '@/routes/dashboard/venues';
 import type { Auth } from '@/types/auth';
 
@@ -36,42 +37,47 @@ export default function VenueForm({
     submitLabel = 'Save Venue',
 }: VenueFormProps) {
     const { auth } = usePage().props as { auth: Auth };
-    const isSuperAdmin = auth.user?.roles?.some((r: any) => r.name === 'Super Admin');
+    const isSuperAdmin = auth.user?.roles?.some(
+        (r: any) => r.name === 'Super Admin',
+    );
     const isEditing = Boolean(venue?.id);
     const [coverPreview, setCoverPreview] = useState<string | null>(null);
     const [galleryPreviews, setGalleryPreviews] = useState<string[]>([]);
 
-    const { data, setData, post, put, processing, errors, transform } = useForm({
-        title: venue?.title ?? '',
-        slug: venue?.slug ?? '',
-        description: venue?.description ?? '',
-        short_description: venue?.short_description ?? '',
-        venue_category_id: venue?.venue_category_id ?? categories[0]?.id ?? '',
-        country_id: venue?.country_id ?? countries[0]?.id ?? '',
-        country_name: '',
-        county_id: venue?.county_id ?? '',
-        county_name: '',
-        city_id: venue?.city_id ?? '',
-        city_name: '',
-        locale_id: venue?.locale_id ?? '',
-        locale_name: '',
-        operational_status: venue?.operational_status ?? 'available',
-        price: venue?.price ?? '',
-        address: venue?.address ?? '',
-        latitude: venue?.latitude ?? '',
-        longitude: venue?.longitude ?? '',
-        contact_email: venue?.contact_email ?? '',
-        contact_phone: venue?.contact_phone ?? '',
-        website: venue?.website ?? '',
-        capacity: venue?.capacity ?? '',
-        meta_title: venue?.meta_title ?? '',
-        meta_description: venue?.meta_description ?? '',
-        featured: venue?.featured ?? false,
-        features: (venue?.features ?? []).map((f: any) => f.id) as number[],
-        cover: null as File | null,
-        gallery: [] as File[],
-        submit_for_approval: false,
-    });
+    const { data, setData, post, put, processing, errors, transform } = useForm(
+        {
+            title: venue?.title ?? '',
+            slug: venue?.slug ?? '',
+            description: venue?.description ?? '',
+            short_description: venue?.short_description ?? '',
+            venue_category_id:
+                venue?.venue_category_id ?? categories[0]?.id ?? '',
+            country_id: venue?.country_id ?? countries[0]?.id ?? '',
+            country_name: '',
+            county_id: venue?.county_id ?? '',
+            county_name: '',
+            city_id: venue?.city_id ?? '',
+            city_name: '',
+            locale_id: venue?.locale_id ?? '',
+            locale_name: '',
+            operational_status: venue?.operational_status ?? 'available',
+            price: venue?.price ?? '',
+            address: venue?.address ?? '',
+            latitude: venue?.latitude ?? '',
+            longitude: venue?.longitude ?? '',
+            contact_email: venue?.contact_email ?? '',
+            contact_phone: venue?.contact_phone ?? '',
+            website: venue?.website ?? '',
+            capacity: venue?.capacity ?? '',
+            meta_title: venue?.meta_title ?? '',
+            meta_description: venue?.meta_description ?? '',
+            featured: venue?.featured ?? false,
+            features: (venue?.features ?? []).map((f: any) => f.id) as number[],
+            cover: null as File | null,
+            gallery: [] as File[],
+            submit_for_approval: false,
+        },
+    );
 
     const counties = useMemo(
         () =>
@@ -112,6 +118,7 @@ export default function VenueForm({
 
         if (isEditing) {
             put(dashboardVenues.update.url(venue!.slug), options);
+
             return;
         }
 
@@ -128,7 +135,10 @@ export default function VenueForm({
                         className={inputClass}
                     />
                 </Field>
-                <Field label="Short description" error={errors.short_description}>
+                <Field
+                    label="Short description"
+                    error={errors.short_description}
+                >
                     <textarea
                         value={data.short_description}
                         onChange={(e) =>
@@ -181,7 +191,9 @@ export default function VenueForm({
                             <input
                                 type="checkbox"
                                 checked={data.featured}
-                                onChange={(e) => setData('featured', e.target.checked)}
+                                onChange={(e) =>
+                                    setData('featured', e.target.checked)
+                                }
                                 className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary"
                             />
                             <span className="text-sm text-slate-700 dark:text-slate-200">
@@ -193,7 +205,10 @@ export default function VenueForm({
             )}
 
             <div className="grid gap-4 md:grid-cols-2">
-                <Field label="Country" error={errors.country_id || errors.country_name}>
+                <Field
+                    label="Country"
+                    error={errors.country_id || errors.country_name}
+                >
                     <select
                         value={data.country_id}
                         onChange={(e) => {
@@ -236,7 +251,10 @@ export default function VenueForm({
                         className="mt-3 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-slate-400 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
                     />
                 </Field>
-                <Field label="County" error={errors.county_id || errors.county_name}>
+                <Field
+                    label="County"
+                    error={errors.county_id || errors.county_name}
+                >
                     <select
                         value={data.county_id}
                         onChange={(e) => {
@@ -312,7 +330,10 @@ export default function VenueForm({
                         className="mt-3 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-slate-400 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
                     />
                 </Field>
-                <Field label="Area / Locale" error={errors.locale_id || errors.locale_name}>
+                <Field
+                    label="Area / Locale"
+                    error={errors.locale_id || errors.locale_name}
+                >
                     <select
                         value={data.locale_id}
                         onChange={(e) =>
@@ -394,9 +415,11 @@ export default function VenueForm({
                         onChange={(e) => {
                             const file = e.target.files?.[0];
                             setData('cover', file ?? null);
+
                             if (file) {
                                 const reader = new FileReader();
-                                reader.onload = () => setCoverPreview(reader.result as string);
+                                reader.onload = () =>
+                                    setCoverPreview(reader.result as string);
                                 reader.readAsDataURL(file);
                             }
                         }}
@@ -404,7 +427,11 @@ export default function VenueForm({
                     />
                     {coverPreview && (
                         <div className="mt-3">
-                            <img src={coverPreview} alt="Cover preview" className="max-h-48 w-full rounded-2xl object-cover" />
+                            <img
+                                src={coverPreview}
+                                alt="Cover preview"
+                                className="max-h-48 w-full rounded-2xl object-cover"
+                            />
                         </div>
                     )}
                 </Field>
@@ -423,6 +450,7 @@ export default function VenueForm({
                                 reader.onload = () => {
                                     previews.push(reader.result as string);
                                     loadedCount++;
+
                                     if (loadedCount === files.length) {
                                         setGalleryPreviews(previews);
                                     }
@@ -474,8 +502,12 @@ export default function VenueForm({
                                 ...current,
                                 publish_directly: true,
                             }));
+
                             if (isEditing) {
-                                put(dashboardVenues.update.url(venue!.slug), options);
+                                put(
+                                    dashboardVenues.update.url(venue!.slug),
+                                    options,
+                                );
                             } else {
                                 post(dashboardVenues.store.url(), options);
                             }

@@ -1,10 +1,14 @@
 import { Head, Link, usePage } from '@inertiajs/react';
+import FilterBar from '@/components/dashboard/filter-bar';
 import DashboardPageShell from '@/components/dashboard-page-shell';
 import Pagination from '@/components/pagination';
 import { formatPrice } from '@/lib/money';
 import dashboardPackages from '@/routes/dashboard/packages';
 
-export default function DashboardPackagesIndex({ packages }: any) {
+export default function DashboardPackagesIndex({
+    packages,
+    filters = {},
+}: any) {
     const { auth } = usePage().props as {
         auth: { user?: { permissions?: string[] } };
     };
@@ -27,6 +31,25 @@ export default function DashboardPackagesIndex({ packages }: any) {
                     ) : null
                 }
             >
+                <FilterBar
+                    filters={filters}
+                    fields={[
+                        {
+                            label: 'Search',
+                            name: 'q',
+                            placeholder: 'Package name',
+                        },
+                        {
+                            label: 'Status',
+                            name: 'active',
+                            type: 'select',
+                            options: [
+                                { label: 'Active', value: '1' },
+                                { label: 'Inactive', value: '0' },
+                            ],
+                        },
+                    ]}
+                />
                 <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
                     <table className="min-w-full divide-y divide-border text-left text-sm">
                         <thead className="bg-slate-100 text-slate-700 dark:bg-slate-900 dark:text-slate-200">
