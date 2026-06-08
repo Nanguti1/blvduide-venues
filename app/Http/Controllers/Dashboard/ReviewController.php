@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Models\Review;
 use App\Models\Venue;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -12,14 +13,26 @@ class ReviewController extends Controller
 {
     public function index(Request $request)
     {
+        $filters = $request->only(['q', 'status', 'rating']);
+
         $reviews = $request->user()
             ->reviews()
             ->with('venue')
+            ->when($filters['q'] ?? null, function ($q, string $term): void {
+                $q->where(function ($query) use ($term): void {
+                    $query->where('comment', 'like', '%'.$term.'%')
+                        ->orWhereHas('venue', fn (Builder $venue) => $venue->where('title', 'like', '%'.$term.'%'));
+                });
+            })
+            ->when($filters['status'] ?? null, fn ($q, string $status) => $q->where('status', $status))
+            ->when($filters['rating'] ?? null, fn ($q, string $rating) => $q->where('rating', $rating))
             ->latest()
-            ->paginate(20);
+            ->paginate(20)
+            ->withQueryString();
 
         return Inertia::render('dashboard/reviews/index', [
             'reviews' => $reviews,
+            'filters' => $filters,
         ]);
     }
 

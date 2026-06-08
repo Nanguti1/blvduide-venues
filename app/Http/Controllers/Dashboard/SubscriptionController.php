@@ -6,6 +6,7 @@ use App\Enums\PaymentStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Package;
 use App\Models\Subscription;
+use Illuminate\Database\Eloquent\Builder;
 use App\Services\SubscriptionService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -14,10 +15,27 @@ class SubscriptionController extends Controller
 {
     public function index(Request $request)
     {
-        $subscriptions = $request->user()->subscriptions()->with('package')->latest()->paginate(20);
+        $filters = $request->only(['q', 'status', 'payment_status', 'date_from', 'date_to']);
+
+        $subscriptions = $request->user()->subscriptions()
+            ->with('package')
+            ->when($filters['q'] ?? null, function ($q, string $term): void {
+                $q->where(function ($query) use ($term): void {
+                    $query->where('transaction_reference', 'like', '%'.$term.'%')
+                        ->orWhereHas('package', fn (Builder $package) => $package->where('name', 'like', '%'.$term.'%'));
+                });
+            })
+            ->when($filters['status'] ?? null, fn ($q, string $status) => $q->where('status', $status))
+            ->when($filters['payment_status'] ?? null, fn ($q, string $status) => $q->where('payment_status', $status))
+            ->when($filters['date_from'] ?? null, fn ($q, string $date) => $q->whereDate('starts_at', '>=', $date))
+            ->when($filters['date_to'] ?? null, fn ($q, string $date) => $q->whereDate('starts_at', '<=', $date))
+            ->latest()
+            ->paginate(20)
+            ->withQueryString();
 
         return Inertia::render('dashboard/subscriptions/index', [
             'subscriptions' => $subscriptions,
+            'filters' => $filters,
         ]);
     }
 

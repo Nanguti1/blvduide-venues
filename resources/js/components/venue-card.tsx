@@ -1,10 +1,14 @@
 import { Link } from '@inertiajs/react';
 import { Star } from 'lucide-react';
+import { htmlToPlainText, HtmlContent } from '@/lib/html';
 import { formatPrice } from '@/lib/money';
 import venues from '@/routes/venues';
 
 export default function VenueCard({ venue }: { venue: any }) {
-    const coverImage = venue.media?.find((m: any) => m.collection_name === 'venue-cover');
+    const coverImage = venue.media?.find(
+        (m: any) => m.collection_name === 'venue-cover',
+    );
+    const description = venue.short_description || venue.description;
 
     return (
         <article className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg dark:border-slate-700 dark:bg-slate-900">
@@ -35,9 +39,13 @@ export default function VenueCard({ venue }: { venue: any }) {
                         {venue.featured ? 'Featured' : 'Standard'}
                     </span>
                 </div>
-                <p className="mb-4 text-sm leading-6 text-slate-600 dark:text-slate-300">
-                    {venue.short_description}
-                </p>
+                {description ? (
+                    <HtmlContent
+                        html={description}
+                        aria-label={htmlToPlainText(description)}
+                        className="mb-4 line-clamp-3 text-sm leading-6 text-slate-600 dark:text-slate-300 [&_a]:font-medium [&_a]:text-primary [&_a]:underline [&_b]:font-semibold [&_p:not(:last-child)]:mb-2 [&_strong]:font-semibold"
+                    />
+                ) : null}
                 <div className="mb-4 flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400">
                     <span>{venue.city?.name ?? venue.locale?.name}</span>
                     <span>•</span>

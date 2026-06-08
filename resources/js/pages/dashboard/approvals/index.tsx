@@ -1,8 +1,9 @@
 import { Head, Link, router } from '@inertiajs/react';
+import FilterBar from '@/components/dashboard/filter-bar';
 import DashboardPageShell from '@/components/dashboard-page-shell';
 import Pagination from '@/components/pagination';
 
-export default function ApprovalsIndex({ venues }: any) {
+export default function ApprovalsIndex({ venues, filters = {} }: any) {
     return (
         <>
             <Head title="Venue Approvals" />
@@ -10,6 +11,30 @@ export default function ApprovalsIndex({ venues }: any) {
                 title="Venue Approvals"
                 description="Review pending listings before they go live."
             >
+                <FilterBar
+                    filters={filters}
+                    fields={[
+                        {
+                            label: 'Search',
+                            name: 'q',
+                            placeholder: 'Venue title',
+                        },
+                        {
+                            label: 'Owner',
+                            name: 'owner',
+                            placeholder: 'Owner name or email',
+                        },
+                        {
+                            label: 'Status',
+                            name: 'status',
+                            type: 'select',
+                            options: [
+                                { label: 'Pending', value: 'pending' },
+                                { label: 'Rejected', value: 'rejected' },
+                            ],
+                        },
+                    ]}
+                />
                 <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
                     <table className="min-w-full divide-y divide-border text-left text-sm">
                         <thead className="bg-slate-100 text-slate-700 dark:bg-slate-900 dark:text-slate-200">

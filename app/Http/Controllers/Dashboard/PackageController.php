@@ -3,19 +3,27 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PackageRequest;
 use App\Models\Package;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Http\Requests\PackageRequest;
 
 class PackageController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $packages = Package::orderBy('price')->paginate(20);
+        $filters = $request->only(['q', 'active']);
+
+        $packages = Package::query()
+            ->when($filters['q'] ?? null, fn ($q, string $term) => $q->where('name', 'like', '%'.$term.'%'))
+            ->when(isset($filters['active']) && $filters['active'] !== '', fn ($q) => $q->where('is_active', $filters['active'] === '1'))
+            ->orderBy('price')
+            ->paginate(20)
+            ->withQueryString();
 
         return Inertia::render('dashboard/packages/index', [
             'packages' => $packages,
+            'filters' => $filters,
         ]);
     }
 

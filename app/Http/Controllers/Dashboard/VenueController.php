@@ -13,6 +13,7 @@ use App\Models\Locale;
 use App\Models\Venue;
 use App\Models\VenueCategory;
 use App\Models\VenueFeature;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -25,13 +26,30 @@ class VenueController extends Controller
             ? Venue::query()
             : $request->user()->venues();
 
+        $filters = $request->only(['q', 'featured', 'category', 'location', 'status']);
+
         $venues = $query
             ->with(['category', 'country', 'county', 'city', 'locale'])
+            ->when($filters['q'] ?? null, fn ($q, string $term) => $q->where('title', 'like', '%'.$term.'%'))
+            ->when(isset($filters['featured']) && $filters['featured'] !== '', fn ($q) => $q->where('featured', $filters['featured'] === '1'))
+            ->when($filters['category'] ?? null, fn ($q, string $category) => $q->where('venue_category_id', $category))
+            ->when($filters['location'] ?? null, function ($q, string $location): void {
+                $q->where(function ($query) use ($location): void {
+                    $query->whereHas('country', fn (Builder $country) => $country->where('name', 'like', '%'.$location.'%'))
+                        ->orWhereHas('county', fn (Builder $county) => $county->where('name', 'like', '%'.$location.'%'))
+                        ->orWhereHas('city', fn (Builder $city) => $city->where('name', 'like', '%'.$location.'%'))
+                        ->orWhereHas('locale', fn (Builder $locale) => $locale->where('name', 'like', '%'.$location.'%'));
+                });
+            })
+            ->when($filters['status'] ?? null, fn ($q, string $status) => $q->where('approval_status', $status))
             ->latest()
-            ->paginate(20);
+            ->paginate(20)
+            ->withQueryString();
 
         return Inertia::render('dashboard/venues/index', [
             'venues' => $venues,
+            'filters' => $filters,
+            'categories' => VenueCategory::orderBy('name')->get(['id', 'name']),
         ]);
     }
 
@@ -63,9 +81,13 @@ class VenueController extends Controller
         $attributes = array_merge($attributes, $this->resolveLocationIds($attributes));
         unset($attributes['country_name'], $attributes['county_name'], $attributes['city_name'], $attributes['locale_name']);
 
+        if (! $user->hasRole('Super Admin')) {
+            unset($attributes['featured']);
+        }
+
         $attributes['user_id'] = $user->id;
         $attributes['slug'] = $attributes['slug'] ?? Str::slug($attributes['title']);
-        
+
         if ($request->boolean('publish_directly') && $user->hasRole('Super Admin')) {
             $attributes['approval_status'] = VenueApprovalStatus::Published->value;
             $attributes['published_at'] = now();
@@ -103,6 +125,10 @@ class VenueController extends Controller
         unset($attributes['country_name'], $attributes['county_name'], $attributes['city_name'], $attributes['locale_name']);
 
         $attributes['slug'] = $attributes['slug'] ?? Str::slug($attributes['title']);
+
+        if (! $request->user()->hasRole('Super Admin')) {
+            unset($attributes['featured']);
+        }
 
         if ($request->boolean('publish_directly') && $request->user()->hasRole('Super Admin')) {
             $attributes['approval_status'] = VenueApprovalStatus::Published->value;

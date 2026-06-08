@@ -1,9 +1,10 @@
 import { Head, Link, router } from '@inertiajs/react';
+import FilterBar from '@/components/dashboard/filter-bar';
 import DashboardPageShell from '@/components/dashboard-page-shell';
 import Pagination from '@/components/pagination';
 import venues from '@/routes/venues';
 
-export default function AdminReviewsIndex({ reviews }: any) {
+export default function AdminReviewsIndex({ reviews, filters = {} }: any) {
     return (
         <>
             <Head title="Review Moderation" />
@@ -11,6 +12,35 @@ export default function AdminReviewsIndex({ reviews }: any) {
                 title="Review Moderation"
                 description="Approve or reject guest reviews across all venues."
             >
+                <FilterBar
+                    filters={filters}
+                    fields={[
+                        {
+                            label: 'Search',
+                            name: 'q',
+                            placeholder: 'Venue, reviewer, comment',
+                        },
+                        {
+                            label: 'Status',
+                            name: 'status',
+                            type: 'select',
+                            options: [
+                                { label: 'Pending', value: 'pending' },
+                                { label: 'Approved', value: 'approved' },
+                                { label: 'Rejected', value: 'rejected' },
+                            ],
+                        },
+                        {
+                            label: 'Rating',
+                            name: 'rating',
+                            type: 'select',
+                            options: [1, 2, 3, 4, 5].map((rating) => ({
+                                label: `${rating} star${rating === 1 ? '' : 's'}`,
+                                value: rating,
+                            })),
+                        },
+                    ]}
+                />
                 <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
                     <table className="min-w-full divide-y divide-border text-left text-sm">
                         <thead className="bg-slate-100 text-slate-700 dark:bg-slate-900 dark:text-slate-200">

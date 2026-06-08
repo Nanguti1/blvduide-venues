@@ -1,10 +1,15 @@
 import { Head, Link } from '@inertiajs/react';
+import FilterBar from '@/components/dashboard/filter-bar';
 import DashboardPageShell from '@/components/dashboard-page-shell';
 import Pagination from '@/components/pagination';
 import dashboardFavorites from '@/routes/dashboard/favorites';
 import venues from '@/routes/venues';
 
-export default function DashboardFavoritesIndex({ favorites }: any) {
+export default function DashboardFavoritesIndex({
+    favorites,
+    filters = {},
+    categories = [],
+}: any) {
     return (
         <>
             <Head title="Favorites" />
@@ -20,6 +25,39 @@ export default function DashboardFavoritesIndex({ favorites }: any) {
                     </Link>
                 }
             >
+                <FilterBar
+                    filters={filters}
+                    fields={[
+                        {
+                            label: 'Search',
+                            name: 'q',
+                            placeholder: 'Venue name',
+                        },
+                        {
+                            label: 'Category',
+                            name: 'category',
+                            type: 'select',
+                            options: categories.map((category: any) => ({
+                                label: category.name,
+                                value: category.slug,
+                            })),
+                        },
+                        {
+                            label: 'Location',
+                            name: 'location',
+                            placeholder: 'Country, city, locale',
+                        },
+                        {
+                            label: 'Featured',
+                            name: 'featured',
+                            type: 'select',
+                            options: [
+                                { label: 'Featured', value: '1' },
+                                { label: 'Not featured', value: '0' },
+                            ],
+                        },
+                    ]}
+                />
                 <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
                     <table className="min-w-full divide-y divide-border text-left text-sm">
                         <thead className="bg-slate-100 text-slate-700 dark:bg-slate-900 dark:text-slate-200">

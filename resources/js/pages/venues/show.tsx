@@ -1,16 +1,27 @@
-import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
+import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { Heart, Star } from 'lucide-react';
 import VenueCard from '@/components/venue-card';
+import { htmlToPlainText, HtmlContent } from '@/lib/html';
 import { formatPrice } from '@/lib/money';
-import venues from '@/routes/venues';
 
 export default function VenueShow() {
-    const { venue, related, isFavorited, approvedReviews, pendingReviews, auth } =
-        usePage().props as any;
+    const {
+        venue,
+        related,
+        isFavorited,
+        approvedReviews,
+        pendingReviews,
+        auth,
+    } = usePage().props as any;
 
     const allReviews = [...(approvedReviews ?? []), ...(pendingReviews ?? [])];
-    const coverImage = venue.media?.find((m: any) => m.collection_name === 'venue-cover');
-    const galleryImages = venue.media?.filter((m: any) => m.collection_name === 'venue-gallery') ?? [];
+    const coverImage = venue.media?.find(
+        (m: any) => m.collection_name === 'venue-cover',
+    );
+    const galleryImages =
+        venue.media?.filter(
+            (m: any) => m.collection_name === 'venue-gallery',
+        ) ?? [];
 
     const reviewForm = useForm({
         rating: 5,
@@ -18,15 +29,28 @@ export default function VenueShow() {
     });
 
     const metaTitle = venue.meta_title ?? venue.title;
-    const metaDescription =
-        venue.meta_description ?? venue.short_description ?? venue.description;
+    const metaDescription = htmlToPlainText(
+        venue.meta_description ?? venue.short_description ?? venue.description,
+    );
 
     return (
         <>
             <Head title={metaTitle}>
-                <meta head-key="description" name="description" content={metaDescription} />
-                <meta head-key="og:title" property="og:title" content={metaTitle} />
-                <meta head-key="og:description" property="og:description" content={metaDescription} />
+                <meta
+                    head-key="description"
+                    name="description"
+                    content={metaDescription}
+                />
+                <meta
+                    head-key="og:title"
+                    property="og:title"
+                    content={metaTitle}
+                />
+                <meta
+                    head-key="og:description"
+                    property="og:description"
+                    content={metaDescription}
+                />
                 <meta head-key="og:type" property="og:type" content="website" />
             </Head>
             <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
@@ -50,17 +74,24 @@ export default function VenueShow() {
                     {/* Gallery Thumbnails */}
                     <div className="space-y-3">
                         {galleryImages.length > 0 ? (
-                            galleryImages.slice(0, 4).map((image: any, idx: number) => (
-                                <div key={image.id} className="overflow-hidden rounded-2xl">
-                                    <img
-                                        src={image.original_url}
-                                        alt={`Gallery ${idx + 1}`}
-                                        className="aspect-square w-full object-cover"
-                                    />
-                                </div>
-                            ))
+                            galleryImages
+                                .slice(0, 4)
+                                .map((image: any, idx: number) => (
+                                    <div
+                                        key={image.id}
+                                        className="overflow-hidden rounded-2xl"
+                                    >
+                                        <img
+                                            src={image.original_url}
+                                            alt={`Gallery ${idx + 1}`}
+                                            className="aspect-square w-full object-cover"
+                                        />
+                                    </div>
+                                ))
                         ) : (
-                            <p className="text-sm text-slate-500">No gallery images</p>
+                            <p className="text-sm text-slate-500">
+                                No gallery images
+                            </p>
                         )}
                     </div>
                 </section>
@@ -71,7 +102,10 @@ export default function VenueShow() {
                         <h3 className="mb-4 text-lg font-semibold">Gallery</h3>
                         <div className="grid gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
                             {galleryImages.map((image: any, idx: number) => (
-                                <div key={image.id} className="overflow-hidden rounded-2xl">
+                                <div
+                                    key={image.id}
+                                    className="overflow-hidden rounded-2xl"
+                                >
                                     <img
                                         src={image.original_url}
                                         alt={`Gallery ${idx + 1}`}
@@ -110,19 +144,23 @@ export default function VenueShow() {
                                 )}
                             </div>
                             <p className="text-slate-600 dark:text-slate-300">
-                                {venue.short_description}
+                                {htmlToPlainText(venue.short_description)}
                             </p>
                         </div>
                         <div className="grid gap-4 sm:grid-cols-2">
                             <div>
-                                <p className="text-sm text-slate-500">Location</p>
+                                <p className="text-sm text-slate-500">
+                                    Location
+                                </p>
                                 <p className="font-medium text-slate-900 dark:text-white">
                                     {venue.locale?.name ?? venue.city?.name},{' '}
                                     {venue.country?.name}
                                 </p>
                             </div>
                             <div>
-                                <p className="text-sm text-slate-500">Capacity</p>
+                                <p className="text-sm text-slate-500">
+                                    Capacity
+                                </p>
                                 <p className="font-medium text-slate-900 dark:text-white">
                                     {venue.capacity ?? 'N/A'}
                                 </p>
@@ -132,9 +170,10 @@ export default function VenueShow() {
                             <p className="text-sm font-medium text-slate-500">
                                 Description
                             </p>
-                            <p className="text-sm leading-7 text-slate-600 dark:text-slate-300">
-                                {venue.description}
-                            </p>
+                            <HtmlContent
+                                html={venue.description}
+                                className="text-sm leading-7 text-slate-600 dark:text-slate-300 [&_a]:font-medium [&_a]:text-primary [&_a]:underline [&_b]:font-semibold [&_li]:ml-5 [&_li]:list-disc [&_ol]:space-y-2 [&_p:not(:last-child)]:mb-4 [&_strong]:font-semibold [&_ul]:space-y-2"
+                            />
                         </div>
                     </div>
                     <aside className="space-y-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
@@ -175,12 +214,18 @@ export default function VenueShow() {
 
                 <section className="mt-12 grid gap-8 lg:grid-cols-2">
                     <div>
-                        <h2 className="mb-4 text-2xl font-semibold">Reviews ({allReviews?.length ?? 0})</h2>
+                        <h2 className="mb-4 text-2xl font-semibold">
+                            Reviews ({allReviews?.length ?? 0})
+                        </h2>
                         <div className="space-y-4">
                             {allReviews && allReviews.length > 0 ? (
                                 allReviews.map((review: any) => {
-                                    const isUserReview = auth.user?.id === review.user_id;
-                                    const isPending = review.status === 'pending' && isUserReview;
+                                    const isUserReview =
+                                        auth.user?.id === review.user_id;
+                                    const isPending =
+                                        review.status === 'pending' &&
+                                        isUserReview;
+
                                     return (
                                         <article
                                             key={review.id}
@@ -207,7 +252,9 @@ export default function VenueShow() {
                                     );
                                 })
                             ) : (
-                                <p className="text-slate-500">No reviews yet. Be the first to review!</p>
+                                <p className="text-slate-500">
+                                    No reviews yet. Be the first to review!
+                                </p>
                             )}
                         </div>
                     </div>
@@ -241,7 +288,10 @@ export default function VenueShow() {
                             <textarea
                                 value={reviewForm.data.comment}
                                 onChange={(e) =>
-                                    reviewForm.setData('comment', e.target.value)
+                                    reviewForm.setData(
+                                        'comment',
+                                        e.target.value,
+                                    )
                                 }
                                 rows={4}
                                 placeholder="Share your experience..."
@@ -259,7 +309,9 @@ export default function VenueShow() {
                 </section>
 
                 <section className="mt-12">
-                    <h2 className="mb-4 text-2xl font-semibold">Related spaces</h2>
+                    <h2 className="mb-4 text-2xl font-semibold">
+                        Related spaces
+                    </h2>
                     <div className="grid gap-4 md:grid-cols-2">
                         {related?.map((item: any) => (
                             <VenueCard key={item.id} venue={item} />
