@@ -7,6 +7,7 @@ import {
     MessageSquare,
     ShieldCheck,
     Star,
+    Users,
 } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavMain } from '@/components/nav-main';
@@ -49,6 +50,14 @@ export function AppSidebar() {
             title: 'Packages',
             href: dashboardPackages.index.url(),
             icon: CreditCard,
+        });
+    }
+
+    if (permissions.includes('users.manage')) {
+        adminNavItems.push({
+            title: 'Users',
+            href: '/dashboard/admin/users',
+            icon: Users,
         });
     }
 

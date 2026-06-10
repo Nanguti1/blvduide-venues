@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
+use App\Models\ContactInquiry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -23,39 +24,41 @@ class PageController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'first_name' => ['required', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
+            'full_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
-            'zip_code' => ['nullable', 'string', 'max:20'],
+            'phone' => ['nullable', 'string', 'max:50'],
+            'subject' => ['required', 'string', 'max:255'],
             'message' => ['required', 'string', 'max:2000'],
         ]);
 
-        Log::info('Homepage inquiry received.', $validated);
+        ContactInquiry::create($validated);
+        Log::info('Contact inquiry received.', $validated);
 
         try {
             Mail::raw(implode("\n", [
-                'New homepage inquiry received.',
-                'Name: '.$validated['first_name'].' '.$validated['last_name'],
+                'New contact inquiry received.',
+                'Name: '.$validated['full_name'],
                 'Email: '.$validated['email'],
-                'Zip Code: '.($validated['zip_code'] ?? 'N/A'),
+                'Phone: '.($validated['phone'] ?? 'N/A'),
+                'Subject: '.$validated['subject'],
                 'Message:',
                 $validated['message'],
             ]), function ($message) use ($validated) {
                 $message
-                    ->to(config('mail.from.address', 'support@blvdguide.test'))
-                    ->subject('BLVD GUIDE inquiry: '.$validated['first_name'].' '.$validated['last_name'])
-                    ->replyTo($validated['email'], $validated['first_name'].' '.$validated['last_name']);
+                    ->to(config('mail.from.address', 'support@blvdguide.com'))
+                    ->subject('BLVD GUIDE inquiry: '.$validated['subject'])
+                    ->replyTo($validated['email'], $validated['full_name']);
             });
         } catch (\Throwable $exception) {
-            Log::error('Failed to send homepage inquiry email.', [
+            Log::error('Failed to send contact inquiry email.', [
                 'error' => $exception->getMessage(),
                 'inquiry' => $validated,
             ]);
         }
 
-        return redirect()->route('home')->with('toast', [
+        return back()->with('toast', [
             'type' => 'success',
-            'message' => 'Thanks! Your inquiry has been sent. We will get back to you shortly.',
+            'message' => 'Thanks! Your message has been sent. We will get back to you shortly.',
         ]);
     }
 }
