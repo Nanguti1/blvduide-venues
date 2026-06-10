@@ -8,6 +8,7 @@ import { initializeTheme } from '@/hooks/use-appearance';
 import AppLayout from '@/layouts/app-layout';
 import AuthLayout from '@/layouts/auth-layout';
 import PublicLayout from '@/layouts/public-layout';
+import RootLayout from '@/layouts/root-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 
 const appName = import.meta.env.VITE_APP_NAME || 'BLVD GUIDE';
@@ -31,13 +32,13 @@ createInertiaApp({
     layout: (name) => {
         switch (true) {
             case name.startsWith('auth/'):
-                return AuthLayout;
+                return [RootLayout, AuthLayout];
             case name.startsWith('settings/'):
-                return [AppLayout, SettingsLayout];
+                return [RootLayout, AppLayout, SettingsLayout];
             case isPublicPage(name):
-                return PublicLayout;
+                return [RootLayout, PublicLayout];
             default:
-                return AppLayout;
+                return [RootLayout, AppLayout];
         }
     },
     strictMode: true,
