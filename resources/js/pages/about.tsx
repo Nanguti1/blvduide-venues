@@ -4,7 +4,7 @@ export default function About() {
     return (
         <>
             <Head title="About Us" />
-            <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
+            <div className="max-w-8xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
                 <h1 className="text-4xl font-semibold text-slate-900 dark:text-white">
                     About BLVD GUIDE
                 </h1>
