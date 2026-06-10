@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Dashboard\Admin\UserController;
 use App\Http\Controllers\Dashboard\FavoriteController;
 use App\Http\Controllers\Dashboard\PackageController;
 use App\Http\Controllers\Dashboard\ReviewController;
@@ -43,6 +44,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::middleware(['can:packages.manage'])->group(function () {
             Route::resource('packages', PackageController::class);
+        });
+
+        Route::middleware(['can:users.manage'])->group(function () {
+            Route::resource('admin/users', UserController::class)->names('admin.users');
         });
 
         Route::resource('subscriptions', SubscriptionController::class)->only(['index', 'show', 'store']);

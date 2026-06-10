@@ -12,7 +12,7 @@ class RolesAndPermissionsSeeder extends Seeder
     {
         $permissions = [
             'venues.view-any', 'venues.view-own', 'venues.create', 'venues.update-own', 'venues.delete-own',
-            'venues.approve', 'packages.manage', 'subscriptions.manage', 'locations.manage', 'reviews.moderate',
+            'venues.approve', 'packages.manage', 'subscriptions.manage', 'locations.manage', 'reviews.moderate', 'users.manage',
         ];
 
         foreach ($permissions as $permission) {

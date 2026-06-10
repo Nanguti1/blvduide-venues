@@ -31,7 +31,7 @@ class UpdateVenueRequest extends FormRequest
             'locale_id' => ['nullable', 'exists:locales,id'],
             'locale_name' => ['nullable', 'string', 'max:255'],
             'operational_status' => ['nullable', new Enum(VenueOperationalStatus::class)],
-            'featured' => ['sometimes', 'boolean'],
+            'featured' => $this->user()?->hasRole('Super Admin') ? ['sometimes', 'boolean'] : ['prohibited'],
             'price' => ['nullable', 'numeric', 'min:0'],
             'address' => ['nullable', 'string', 'max:255'],
             'latitude' => ['nullable', 'numeric'],

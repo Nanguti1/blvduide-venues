@@ -37,9 +37,7 @@ export default function VenueForm({
     submitLabel = 'Save Venue',
 }: VenueFormProps) {
     const { auth } = usePage().props as { auth: Auth };
-    const isSuperAdmin = auth.user?.roles?.some(
-        (r: any) => r.name === 'Super Admin',
-    );
+    const isSuperAdmin = auth.user?.roles?.includes('Super Admin') ?? false;
     const isEditing = Boolean(venue?.id);
     const [coverPreview, setCoverPreview] = useState<string | null>(null);
     const [galleryPreviews, setGalleryPreviews] = useState<string[]>([]);
@@ -111,10 +109,18 @@ export default function VenueForm({
 
         const options = { forceFormData: true as const };
 
-        transform((current) => ({
-            ...current,
-            submit_for_approval: forApproval,
-        }));
+        transform((current) => {
+            const next = {
+                ...current,
+                submit_for_approval: forApproval,
+            };
+
+            if (!isSuperAdmin) {
+                delete (next as Partial<typeof current>).featured;
+            }
+
+            return next;
+        });
 
         if (isEditing) {
             put(dashboardVenues.update.url(venue!.slug), options);
