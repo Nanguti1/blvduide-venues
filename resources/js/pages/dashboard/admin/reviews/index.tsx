@@ -2,6 +2,7 @@ import { Head, Link, router } from '@inertiajs/react';
 import FilterBar from '@/components/dashboard/filter-bar';
 import DashboardPageShell from '@/components/dashboard-page-shell';
 import Pagination from '@/components/pagination';
+import { toast } from '@/components/ui/sonner';
 import venues from '@/routes/venues';
 
 export default function AdminReviewsIndex({ reviews, filters = {} }: any) {
@@ -104,6 +105,11 @@ export default function AdminReviewsIndex({ reviews, filters = {} }: any) {
                                                 onClick={() =>
                                                     router.patch(
                                                         `/dashboard/admin/reviews/${review.id}/approve`,
+                                                        {},
+                                                        {
+                                                            onSuccess: () => toast.success('Review approved successfully.'),
+                                                            onError: () => toast.error('Failed to approve review. Please try again.'),
+                                                        }
                                                     )
                                                 }
                                                 className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
@@ -115,6 +121,11 @@ export default function AdminReviewsIndex({ reviews, filters = {} }: any) {
                                                 onClick={() =>
                                                     router.patch(
                                                         `/dashboard/admin/reviews/${review.id}/reject`,
+                                                        {},
+                                                        {
+                                                            onSuccess: () => toast.success('Review rejected successfully.'),
+                                                            onError: () => toast.error('Failed to reject review. Please try again.'),
+                                                        }
                                                     )
                                                 }
                                                 className="rounded-full bg-destructive px-4 py-2 text-sm font-semibold text-white transition hover:bg-destructive/90"

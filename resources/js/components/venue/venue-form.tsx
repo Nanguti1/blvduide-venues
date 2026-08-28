@@ -5,6 +5,7 @@ import dashboardVenues from '@/routes/dashboard/venues';
 import type { Auth } from '@/types/auth';
 import CoordinateSelector from './coordinate-selector';
 import { reverseGeocode, formatAddress } from '@/lib/geocoding';
+import { toast } from '@/components/ui/sonner';
 
 type LocationNode = {
     id: number;
@@ -135,7 +136,21 @@ export default function VenueForm({
     function submit(e: FormEvent, forApproval = false) {
         e.preventDefault();
 
-        const options = { forceFormData: true as const };
+        const options = {
+            forceFormData: true as const,
+            onSuccess: () => {
+                if (forApproval) {
+                    toast.success('Venue submitted for approval.');
+                } else if (isEditing) {
+                    toast.success('Venue updated successfully.');
+                } else {
+                    toast.success('Venue created successfully and is ready for review.');
+                }
+            },
+            onError: () => {
+                toast.error('Failed to save venue. Please try again.');
+            },
+        };
 
         transform((current) => {
             const next = {
@@ -548,7 +563,19 @@ export default function VenueForm({
                         disabled={processing}
                         onClick={(e) => {
                             e.preventDefault();
-                            const options = { forceFormData: true as const };
+                            const options = {
+                                forceFormData: true as const,
+                                onSuccess: () => {
+                                    if (isEditing) {
+                                        toast.success('Venue published successfully.');
+                                    } else {
+                                        toast.success('Venue created and published successfully.');
+                                    }
+                                },
+                                onError: () => {
+                                    toast.error('Failed to publish venue. Please try again.');
+                                },
+                            };
                             transform((current) => ({
                                 ...current,
                                 publish_directly: true,

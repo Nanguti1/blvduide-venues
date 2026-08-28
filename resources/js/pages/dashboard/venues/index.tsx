@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react';
 import FilterBar from '@/components/dashboard/filter-bar';
 import DashboardPageShell from '@/components/dashboard-page-shell';
 import Pagination from '@/components/pagination';
+import { toast } from '@/components/ui/sonner';
 import dashboardVenues from '@/routes/dashboard/venues';
 import { formatPrice } from '@/lib/money';
 
@@ -62,7 +63,13 @@ export default function DashboardVenuesIndex({
         router.delete('/dashboard/venues/bulk-delete', {
             data: { venue_ids: selectedVenueIds },
             preserveScroll: true,
-            onSuccess: () => setSelectedVenueIds([]),
+            onSuccess: () => {
+                setSelectedVenueIds([]);
+                toast.success(`${selectedVenueIds.length} venue${selectedVenueIds.length === 1 ? '' : 's'} deleted successfully.`);
+            },
+            onError: () => {
+                toast.error('Failed to delete venues. Please try again.');
+            },
         });
     }
 
@@ -231,6 +238,8 @@ export default function DashboardVenuesIndex({
                                                 )}
                                                 method="patch"
                                                 as="button"
+                                                onSuccess={() => toast.success('Venue submitted for approval.')}
+                                                onError={() => toast.error('Failed to submit venue. Please try again.')}
                                                 className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
                                             >
                                                 Submit

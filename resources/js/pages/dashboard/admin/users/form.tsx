@@ -1,6 +1,6 @@
 import { Link, useForm } from '@inertiajs/react';
 import type { FormEvent } from 'react';
-import { toast } from 'sonner';
+import { toast } from '@/components/ui/sonner';
 
 type Role = { id: number; name: string };
 type Status = { label: string; value: string };
@@ -33,6 +33,13 @@ export default function UserForm({
         e.preventDefault();
         const options = {
             preserveScroll: true,
+            onSuccess: () => {
+                if (isEditing) {
+                    toast.success('User updated successfully.');
+                } else {
+                    toast.success('User created successfully.');
+                }
+            },
             onError: () =>
                 toast.error('Please correct the highlighted user fields.'),
         };

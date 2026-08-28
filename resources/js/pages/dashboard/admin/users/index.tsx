@@ -1,5 +1,5 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { toast } from 'sonner';
+import { toast } from '@/components/ui/sonner';
 import FilterBar from '@/components/dashboard/filter-bar';
 import DashboardPageShell from '@/components/dashboard-page-shell';
 import Pagination from '@/components/pagination';
@@ -16,6 +16,7 @@ export default function DashboardUsersIndex({
 
         router.delete(`/dashboard/admin/users/${user.id}`, {
             preserveScroll: true,
+            onSuccess: () => toast.success('User deleted successfully.'),
             onError: () => toast.error('Unable to delete this user.'),
         });
     }

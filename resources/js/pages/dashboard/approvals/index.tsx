@@ -2,6 +2,7 @@ import { Head, Link, router } from '@inertiajs/react';
 import FilterBar from '@/components/dashboard/filter-bar';
 import DashboardPageShell from '@/components/dashboard-page-shell';
 import Pagination from '@/components/pagination';
+import { toast } from '@/components/ui/sonner';
 
 export default function ApprovalsIndex({ venues, filters = {} }: any) {
     return (
@@ -87,6 +88,11 @@ export default function ApprovalsIndex({ venues, filters = {} }: any) {
                                                 onClick={() =>
                                                     router.patch(
                                                         `/dashboard/approvals/${venue.slug}/approve`,
+                                                        {},
+                                                        {
+                                                            onSuccess: () => toast.success('Venue approved successfully.'),
+                                                            onError: () => toast.error('Failed to approve venue. Please try again.'),
+                                                        }
                                                     )
                                                 }
                                                 className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
@@ -98,6 +104,11 @@ export default function ApprovalsIndex({ venues, filters = {} }: any) {
                                                 onClick={() =>
                                                     router.patch(
                                                         `/dashboard/approvals/${venue.slug}/reject`,
+                                                        {},
+                                                        {
+                                                            onSuccess: () => toast.success('Venue rejected successfully.'),
+                                                            onError: () => toast.error('Failed to reject venue. Please try again.'),
+                                                        }
                                                     )
                                                 }
                                                 className="rounded-full bg-destructive px-4 py-2 text-sm font-semibold text-white transition hover:bg-destructive/90"

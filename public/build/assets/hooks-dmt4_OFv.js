@@ -1,0 +1,1 @@
+import{$ as e,nt as t}from"./app-CWOeRWlk.js";import{l as n}from"./TileLayer-BK5dQ5jY.js";var r=t(e(),1);function i(){return n().map}function a(e){let t=i();return(0,r.useEffect)(function(){return t.on(e),function(){t.off(e)}},[t,e]),t}export{a as t};
