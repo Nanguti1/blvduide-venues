@@ -178,3 +178,8 @@
     overflow: hidden;
     border: 1px solid var(--border);
 }
+
+/* Red marker styling */
+.red-marker {
+    filter: hue-rotate(240deg) saturate(3) brightness(0.8);
+}

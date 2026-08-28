@@ -3,14 +3,15 @@ import L from 'leaflet';
 import { Link } from '@inertiajs/react';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 
-// Create custom red marker icon
+// Create custom red marker icon using reliable CDN
 const redMarkerIcon = new L.Icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/markers/marker-icon-2x-red.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
-    shadowSize: [41, 41]
+    shadowSize: [41, 41],
+    className: 'red-marker'
 });
 
 // Fix for default marker icons in React-Leaflet
@@ -87,8 +88,8 @@ export default function VenuesMapView({ venues, className = 'map-container-lg', 
             scrollWheelZoom={false}
         >
             <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+                url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
             />
             <MapBoundsHandler onBoundsChange={onBoundsChange} />
             <MarkerClusterGroup
