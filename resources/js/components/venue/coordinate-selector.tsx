@@ -1,6 +1,6 @@
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 // Create custom red marker icon
 const redMarkerIcon = new L.Icon({
@@ -52,6 +52,25 @@ export default function CoordinateSelector({
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState<any[]>([]);
     const [searching, setSearching] = useState(false);
+    const [debouncedQuery, setDebouncedQuery] = useState('');
+
+    // Debounce search to avoid too many API calls
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedQuery(searchQuery);
+        }, 500); // 500ms delay
+
+        return () => clearTimeout(timer);
+    }, [searchQuery]);
+
+    // Trigger search when debounced query changes
+    useEffect(() => {
+        if (debouncedQuery) {
+            handleAddressSearch(debouncedQuery);
+        } else {
+            setSearchResults([]);
+        }
+    }, [debouncedQuery]);
 
     const handleMapClick = (lat: number, lng: number) => {
         setPosition([lat, lng]);
@@ -67,15 +86,17 @@ export default function CoordinateSelector({
         }
     };
 
-    const handleAddressSearch = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!searchQuery.trim()) return;
+    const handleAddressSearch = useCallback(async (query: string) => {
+        if (!query.trim() || query.length < 3) {
+            setSearchResults([]);
+            return;
+        }
 
         setSearching(true);
         try {
             // Use Nominatim (OpenStreetMap) for free geocoding
             const response = await fetch(
-                `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery)}&limit=5`,
+                `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`,
                 {
                     headers: {
                         'User-Agent': 'BLVD-Guide-Venue-App',
@@ -89,7 +110,7 @@ export default function CoordinateSelector({
         } finally {
             setSearching(false);
         }
-    };
+    }, []);
 
     const handleSelectAddress = (result: any) => {
         const lat = parseFloat(result.lat);
@@ -103,30 +124,29 @@ export default function CoordinateSelector({
     return (
         <div className="space-y-4">
             {/* Address Search - Better for non-tech users */}
-            <div>
+            <div className="relative">
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                     Search Address
                 </label>
-                <form onSubmit={handleAddressSearch} className="flex gap-2">
+                <div className="relative">
                     <input
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Enter address (e.g., Nairobi, Kenya)"
-                        className="flex-1 rounded-lg border border-slate-300 px-3 py-2 dark:border-slate-600 dark:bg-slate-800 dark:text-white"
+                        placeholder="Enter address (e.g., Ruiru, Nairobi)"
+                        className="w-full rounded-lg border border-slate-300 px-3 py-2 dark:border-slate-600 dark:bg-slate-800 dark:text-white"
+                        autoComplete="off"
                     />
-                    <button
-                        type="submit"
-                        disabled={searching}
-                        className="rounded-lg bg-primary px-4 py-2 text-white hover:bg-primary/90 disabled:opacity-50"
-                    >
-                        {searching ? 'Searching...' : 'Search'}
-                    </button>
-                </form>
+                    {searching && (
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                            <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
+                        </div>
+                    )}
+                </div>
                 
-                {/* Search Results */}
+                {/* Search Results Dropdown */}
                 {searchResults.length > 0 && (
-                    <div className="mt-2 rounded-lg border border-slate-300 bg-white dark:border-slate-600 dark:bg-slate-800">
+                    <div className="absolute z-10 mt-1 w-full rounded-lg border border-slate-300 bg-white shadow-lg dark:border-slate-600 dark:bg-slate-800">
                         {searchResults.map((result, index) => (
                             <button
                                 key={index}
@@ -191,7 +211,7 @@ export default function CoordinateSelector({
             </div>
 
             <p className="text-xs text-slate-500 dark:text-slate-400">
-                <strong>Easy:</strong> Search for an address above, or <strong>click on the map</strong> to set the location. Coordinates will be auto-filled.
+                <strong>Easy:</strong> Start typing an address for autocomplete suggestions, or <strong>click on the map</strong> to set the location. Coordinates auto-fill.
             </p>
         </div>
     );
