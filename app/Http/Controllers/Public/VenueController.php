@@ -30,12 +30,28 @@ class VenueController extends Controller
             'features',
             'featured',
             'min_rating',
+            'latitude',
+            'longitude',
+            'radius',
         ]);
 
-        $venues = $search->query($filters)
-            ->with(['category', 'features', 'country', 'county', 'city', 'locale', 'user', 'media'])
-            ->paginate(20)
-            ->withQueryString();
+        // Use spatial search if location parameters are provided
+        if (isset($filters['latitude']) && isset($filters['longitude']) && isset($filters['radius'])) {
+            $venues = $search->searchNearby(
+                (float) $filters['latitude'],
+                (float) $filters['longitude'],
+                (float) $filters['radius'],
+                $filters
+            )
+                ->with(['category', 'features', 'country', 'county', 'city', 'locale', 'user', 'media'])
+                ->paginate(20)
+                ->withQueryString();
+        } else {
+            $venues = $search->query($filters)
+                ->with(['category', 'features', 'country', 'county', 'city', 'locale', 'user', 'media'])
+                ->paginate(20)
+                ->withQueryString();
+        }
 
         return $this->renderIndex($request, $venues, $filters);
     }

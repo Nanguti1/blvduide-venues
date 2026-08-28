@@ -10,6 +10,7 @@ import AuthLayout from '@/layouts/auth-layout';
 import PublicLayout from '@/layouts/public-layout';
 import RootLayout from '@/layouts/root-layout';
 import SettingsLayout from '@/layouts/settings/layout';
+import 'leaflet/dist/leaflet.css';
 
 const appName = import.meta.env.VITE_APP_NAME || 'BLVD GUIDE';
 

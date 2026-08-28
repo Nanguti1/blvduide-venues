@@ -149,3 +149,32 @@
         @apply cursor-not-allowed;
     }
 }
+
+/* Leaflet Map Styles */
+.leaflet-container {
+    font-family: inherit;
+}
+
+.map-container {
+    height: 400px;
+    width: 100%;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.map-container-sm {
+    height: 250px;
+    width: 100%;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.map-container-lg {
+    height: 600px;
+    width: 100%;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--border);
+}

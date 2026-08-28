@@ -3,6 +3,8 @@ import type { FormEvent } from 'react';
 import { useMemo, useState } from 'react';
 import dashboardVenues from '@/routes/dashboard/venues';
 import type { Auth } from '@/types/auth';
+import CoordinateSelector from './coordinate-selector';
+import { reverseGeocode, formatAddress } from '@/lib/geocoding';
 
 type LocationNode = {
     id: number;
@@ -41,6 +43,7 @@ export default function VenueForm({
     const isEditing = Boolean(venue?.id);
     const [coverPreview, setCoverPreview] = useState<string | null>(null);
     const [galleryPreviews, setGalleryPreviews] = useState<string[]>([]);
+    const [isGeocoding, setIsGeocoding] = useState(false);
 
     const { data, setData, post, put, processing, errors, transform } = useForm(
         {
@@ -102,6 +105,31 @@ export default function VenueForm({
                 ? data.features.filter((f) => f !== id)
                 : [...data.features, id],
         );
+    }
+
+    async function handleCoordinatesChange(lat: number, lng: number) {
+        setData('latitude', lat);
+        setData('longitude', lng);
+
+        // Optional: Reverse geocode to fill address fields
+        setIsGeocoding(true);
+        try {
+            const result = await reverseGeocode(lat, lng);
+            if (result) {
+                const address = formatAddress(result);
+                // Optionally auto-fill some address fields
+                if (address.city && !data.city_name) {
+                    setData('city_name', address.city);
+                }
+                if (address.country && !data.country_name) {
+                    setData('country_name', address.country);
+                }
+            }
+        } catch (error) {
+            console.error('Geocoding failed:', error);
+        } finally {
+            setIsGeocoding(false);
+        }
     }
 
     function submit(e: FormEvent, forApproval = false) {
@@ -389,6 +417,23 @@ export default function VenueForm({
                         className={inputClass}
                     />
                 </Field>
+            </div>
+
+            <div>
+                <p className="mb-2 text-sm font-medium text-slate-700 dark:text-slate-200">
+                    Location Coordinates
+                </p>
+                <CoordinateSelector
+                    latitude={data.latitude ? Number(data.latitude) : null}
+                    longitude={data.longitude ? Number(data.longitude) : null}
+                    onCoordinatesChange={handleCoordinatesChange}
+                    className="map-container-sm"
+                />
+                {isGeocoding && (
+                    <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                        Looking up address...
+                    </p>
+                )}
             </div>
 
             <div>

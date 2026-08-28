@@ -1,6 +1,7 @@
 import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { Heart, Star } from 'lucide-react';
 import VenueCard from '@/components/venue-card';
+import VenueMap from '@/components/venue/venue-map';
 import { htmlToPlainText, HtmlContent } from '@/lib/html';
 import { formatPrice } from '@/lib/money';
 
@@ -211,6 +212,20 @@ export default function VenueShow() {
                         </div>
                     </aside>
                 </section>
+
+                {/* Location Map Section */}
+                {venue.latitude && venue.longitude && (
+                    <section className="mt-12">
+                        <h2 className="mb-4 text-2xl font-semibold">Location</h2>
+                        <VenueMap
+                            latitude={venue.latitude}
+                            longitude={venue.longitude}
+                            venueName={venue.title}
+                            venueSlug={venue.slug}
+                            className="map-container"
+                        />
+                    </section>
+                )}
 
                 <section className="mt-12 grid gap-8 lg:grid-cols-2">
                     <div>
