@@ -42,7 +42,7 @@ export default function Contact() {
                             </p>
                             <p>
                                 <span className="font-medium">Phone:</span>{' '}
-                                +254-707-199-880
+                                +254-722-458-230
                             </p>
                             <p>
                                 <span className="font-medium">Hours:</span>{' '}

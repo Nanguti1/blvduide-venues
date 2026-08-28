@@ -56,6 +56,18 @@ export default function PublicLayout({
                 </section>
             )}
             <main className="flex-1">{children}</main>
+            
+            {/* WhatsApp Floating Button */}
+            <a
+                href="https://wa.me/254707199880"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-green-500 text-white shadow-lg transition-transform hover:scale-110 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700"
+                aria-label="Contact us on WhatsApp"
+            >
+                <img src="/WhatsApp.svg.webp" alt="WhatsApp" className="h-8 w-8" />
+            </a>
+            
             <footer className="border-t border-slate-200 bg-slate-50 text-slate-900 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100">
                 <div className="max-w-8xl mx-auto px-4 py-20 sm:px-6 lg:px-8">
                     <div className="grid gap-8 lg:grid-cols-[1.5fr_repeat(3,minmax(0,1fr))]">
@@ -166,10 +178,10 @@ export default function PublicLayout({
                                 </li>
                                 <li>
                                     <a
-                                        href="tel:+254707199880"
+                                        href="tel:+254722458230"
                                         className="text-slate-600 transition hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
                                     >
-                                        +254-707-199-880
+                                        +254-722-458-230
                                     </a>
                                 </li>
                             </ul>
