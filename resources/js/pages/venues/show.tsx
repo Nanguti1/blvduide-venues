@@ -54,7 +54,7 @@ export default function VenueShow() {
                 />
                 <meta head-key="og:type" property="og:type" content="website" />
             </Head>
-            <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-8xl px-4 py-10 sm:px-6 lg:px-8">
                 {/* Media Gallery Section - Product Page Style */}
                 <section className="mb-12 grid gap-6 lg:grid-cols-[2fr_1fr]">
                     {/* Main Cover Image */}
