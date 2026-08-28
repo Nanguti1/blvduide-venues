@@ -74,6 +74,7 @@ class VenueController extends Controller
             'related' => Venue::published()
                 ->where('venue_category_id', $venue->venue_category_id)
                 ->where('id', '!=', $venue->id)
+                ->with('media')
                 ->limit(4)
                 ->get(),
         ]);
